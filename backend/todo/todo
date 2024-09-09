@@ -1,0 +1,11 @@
+1. User Authentication
+    - Users need to register, login, and have profiles.
+        - Use Mongoengine to manage the database.
+        - Endpoints: /register, /login, /logout
+2. Forum structure
+    - Create models for posts, comments, users, and mentors.
+    - Define routes for creating, reading, updating, and deleting (CRUD) posts and comments.
+    - API endpoints for upvotes, downvotes, and comment threads.
+3. Database
+    - Use an ORM like Mongoengine to manage the database.
+    - Define models for Users, Posts, Comments, Votes, and Mentors.
