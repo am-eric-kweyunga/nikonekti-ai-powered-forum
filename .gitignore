@@ -1,4 +1,4 @@
-
+nikonect_forum/
 ### Flask ###
 instance/*
 !instance/.gitignore
@@ -22,7 +22,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
