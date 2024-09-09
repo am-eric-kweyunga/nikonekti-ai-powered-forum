@@ -25,7 +25,10 @@ export default function Component() {
         </div>
         <div className="flex justify-center items-center gap-4">
           <Button variant={"outline"}>Edit Profile</Button>
-          <Button variant={"outline"} onClick={() => router.push("/api/auth/logout")}>Logout</Button>
+          <Button variant={"outline"} onClick={() => {
+            router.push("https://nikonekti.vercel.app/api/auth/logout")
+            router.push("https://forumnikonekti.vercel.app/api/auth/logout")
+          }}>Logout</Button>
         </div>
       </header>
 
