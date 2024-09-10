@@ -154,4 +154,29 @@ def add_student_profile():
         return jsonify({'student_id': str(student_id), 'message': 'Student profile created successfully'}), 201
 
     return jsonify({'error': 'Method not allowed'}), 405
-    
+
+@bp.route('/delete_student', methods=['DELETE'])
+def delete_student():
+    if request.method == 'DELETE':
+        data = request.json
+        student_email = data.get('email')
+
+        # Check if the student's email is provided
+        if not student_email:
+            return jsonify({"status": "error", "message": "Email is required"}), 400
+
+        # Check if the student exists in the database
+        student_exists = forum.find_student_by_email(email=student_email)
+        if student_exists is None:
+            return jsonify({"status": "error", "message": "Student not found"}), 404
+
+        # Delete the student
+        forum.delete_student_by_id(id=student_exists["_id"])
+
+        return jsonify({"status": "success", "message": "Student account deleted successfully"}), 200
+
+    return jsonify({'error': 'Method not allowed'}), 405
+
+
+
+

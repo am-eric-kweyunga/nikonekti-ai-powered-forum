@@ -108,8 +108,11 @@ class StudentMentorForum:
     # Find a student by email or a mentor by email
     def find_student_by_email(self, email):
         self.collection = self.db[MONGODB_STUDENTS_COLLECTION_NAME]
-        print(email)
         return self.collection.find_one({"email": email})
+    
+    def delete_student_by_id(self, id):
+        self.collection = self.db[MONGODB_STUDENTS_COLLECTION_NAME]
+        return self.collection.delete_one({"_id": id})
 
     def find_mentor_by_email(self, email):
         self.collection = self.db[MONGODB_MENTORS_COLLECTION_NAME]

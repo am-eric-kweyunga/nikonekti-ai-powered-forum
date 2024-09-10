@@ -8,13 +8,16 @@ import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Switch } from "@/components/ui/switch"
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { DialogHeader } from '@/components/ui/dialog'
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { useToast } from "@/hooks/use-toast"
+import { Circle } from 'lucide-react'
 
 export default function StudentProfile() {
   const { user } = useUser()
   const router = useRouter()
+  const { toast } = useToast()
 
   // States to collect form data
   const [bio, setBio] = React.useState("")
@@ -27,6 +30,7 @@ export default function StudentProfile() {
   const [mentorshipHelp, setMentorshipHelp] = React.useState("")
   const [goals, setGoals] = React.useState("")
   const [profileVisibility, setProfileVisibility] = React.useState(false)
+  const [deleteLoading, setDeleteLoading] = React.useState(false)
 
   // Errors state to manage validation
   const [errors, setErrors] = React.useState({
@@ -87,8 +91,17 @@ export default function StudentProfile() {
       const response = await res.json();
 
       if (response.status !== "success" && response.authorization === 'UnAuthorized') {
-        console.error("Error:", response.message);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "You are not authorized to access this page.",
+        })
       } else {
+        toast({
+          variant: "default",
+          title: "Profile updated",
+          description: "Your profile has been updated successfully.",
+        })
         console.log("Student profile data saved successfully:", response);
         router.push(`/${user?.email}`)
       }
@@ -98,7 +111,8 @@ export default function StudentProfile() {
   // Handle account deletion
   const handleDeleteAccount = async () => {
     if (deleteEmail === user?.email) {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/delete_account`, {
+      setDeleteLoading(true)
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/delete_student`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -108,12 +122,26 @@ export default function StudentProfile() {
 
       const response = await res.json();
       if (response.status === 'success') {
+        toast({
+          variant: "destructive",
+          title: "Account deleted",
+          description: response.message,
+        })
+        setDeleteLoading(false)
         router.push('/api/auth/logout')
       } else {
-        console.error('Error:', response.message)
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: `Something went wrong. Please try again later. ${response.message}`,
+        })
       }
     } else {
-      alert('Email does not match!')
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Email does not match. Please try again.",
+      })
     }
   }
 
@@ -295,13 +323,21 @@ export default function StudentProfile() {
         </section>
 
         {/* Submit Button */}
-        <section className="flex gap-5 md:flex-row flex-col justify-center items-center">
-          <Button variant={"secondary"} className='bg-blue-700/55 hover:bg-blue-700/45 text-white' onClick={handleFormSubmit}>Save Profile</Button>
-          <Button variant={"link"} className='' onClick={() => router.push("/why-profile")}>Learn about your profile</Button>
-        </section>
+        <Card>
+          <CardHeader>
+            <CardTitle className='text-black'>Save Profile</CardTitle>
+          </CardHeader>
+          <CardContent className='flex gap-2'>
+            <Button variant={"secondary"} className='bg-blue-700/55 hover:bg-blue-700/45 text-white' onClick={handleFormSubmit}>Save Profile</Button>
+            <Button variant={"outline"} className='' onClick={() => router.push("/why-profile")}>Learn about your profile</Button>
+          </CardContent>
+          <CardFooter>
+            <p className='text-xs'>You can always come to Update your profile Information</p>
+          </CardFooter>
+        </Card>
 
         {/* Danger Zone */}
-        <section className="mt-10">
+        <section className="">
           <Card className="border-red-500">
             <CardHeader>
               <CardTitle className="text-red-500">Danger Zone</CardTitle>
@@ -315,7 +351,7 @@ export default function StudentProfile() {
                 <DialogTrigger asChild>
                   <Button variant="destructive">Delete Account</Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-xl w-[350px] md:w-auto sm:max-w-[425px]">
+                <DialogContent className="max-w-xl w-[350px] md:w-auto sm:max-w-[425px] rounded-2xl">
                   <DialogHeader>
                     <DialogTitle>Confirm Account Deletion</DialogTitle>
                     <DialogDescription>
@@ -328,7 +364,9 @@ export default function StudentProfile() {
                       value={deleteEmail}
                       onChange={(e) => setDeleteEmail(e.target.value)}
                     />
-                    <Button variant="destructive" onClick={handleDeleteAccount}>Delete Account</Button>
+                    <Button variant="destructive" onClick={handleDeleteAccount}>
+                      {deleteLoading ? <><span className='animation-spine'><Circle /></span></> : "Delete Account"}
+                    </Button>
                   </div>
                 </DialogContent>
               </Dialog>
