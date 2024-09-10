@@ -6,9 +6,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { useUser } from "@auth0/nextjs-auth0/client"
 import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
-import { Select, SelectItem, SelectTrigger, SelectContent, SelectLabel, SelectGroup } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { DialogHeader } from '@/components/ui/dialog'
+import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 
 export default function StudentProfile() {
   const { user } = useUser()
@@ -39,7 +41,9 @@ export default function StudentProfile() {
     goals: false,
   })
 
-  // Validate form data
+  // Email state for account deletion confirmation
+  const [deleteEmail, setDeleteEmail] = React.useState("")
+
   const validateForm = () => {
     const newErrors = {
       bio: bio === "",
@@ -60,7 +64,7 @@ export default function StudentProfile() {
   const handleFormSubmit = async () => {
     if (validateForm()) {
       const studentProfileData = {
-        email : user?.email,
+        email: user?.email,
         bio,
         educationLevel,
         institution,
@@ -91,13 +95,35 @@ export default function StudentProfile() {
     }
   }
 
+  // Handle account deletion
+  const handleDeleteAccount = async () => {
+    if (deleteEmail === user?.email) {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/delete_account`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: user?.email }),
+      });
+
+      const response = await res.json();
+      if (response.status === 'success') {
+        router.push('/api/auth/logout')
+      } else {
+        console.error('Error:', response.message)
+      }
+    } else {
+      alert('Email does not match!')
+    }
+  }
+
   const inputClass = (error: boolean) => error ? 'border-red-500' : ''
 
   return (
-    <div className="w-full max-w-4xl mx-auto py-8 px-4 md:px-6 h-full">
-      <header className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-12 w-12">
+    <div className="w-full max-w-4xl mx-auto py-8 px-4 md:px-6 h-auto">
+      <header className="flex  md:flex-row flex-col gap-5 items-center justify-between mb-6">
+        <div className="flex items-center gap-4 md:flex-row flex-col text-center md:text-start">
+          <Avatar className="h-28 w-28">
             <AvatarImage src={`${user?.picture}`} alt={`${user?.nickname}`} />
             <AvatarFallback className='bg-blue-700/20 text-white animate-pulse uppercase'>
               {user?.name ? user?.name.slice(0, 2) : <>U</>}
@@ -245,22 +271,70 @@ export default function StudentProfile() {
 
         {/* Privacy Settings Section */}
         <section>
-          <div className='py-4'>
-            <h2 className="text-xl font-bold mb-4">Privacy Settings</h2>
-            <div className="flex items-center justify-between">
-              <label htmlFor="profile-visibility" className="font-medium">Profile Visibility</label>
-              <Switch
-                id="profile-visibility"
-                checked={profileVisibility}
-                onCheckedChange={() => setProfileVisibility(!profileVisibility)}
-              />
-            </div>
-          </div>
+          <Card>
+            <CardHeader>
+              <CardTitle>Privacy Settings</CardTitle>
+              <CardDescription>
+                Manage your privacy settings to control who can see your profile.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className=''>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="profile-visibility" className="font-medium">Profile Visibility</label>
+                  <Switch
+                    id="profile-visibility"
+                    checked={profileVisibility}
+                    onCheckedChange={() => setProfileVisibility(!profileVisibility)}
+                  />
+                </div>
+              </div>
 
-          {/* Submit Button */}
-          <section className="col-span-full">
-            <Button variant={"secondary"} className='bg-blue-700/55 hover:bg-blue-700/45 text-white' onClick={handleFormSubmit}>Save Profile</Button>
-          </section>
+            </CardContent>
+          </Card>
+        </section>
+
+        {/* Submit Button */}
+        <section className="flex gap-5 md:flex-row flex-col justify-center items-center">
+          <Button variant={"secondary"} className='bg-blue-700/55 hover:bg-blue-700/45 text-white' onClick={handleFormSubmit}>Save Profile</Button>
+          <Button variant={"link"} className='' onClick={() => router.push("/why-profile")}>Learn about your profile</Button>
+        </section>
+
+        {/* Danger Zone */}
+        <section className="mt-10">
+          <Card className="border-red-500">
+            <CardHeader>
+              <CardTitle className="text-red-500">Danger Zone</CardTitle>
+              <CardDescription>
+                Once you delete your account, there is no going back. Please be certain.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive">Delete Account</Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-xl w-[350px] md:w-auto sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Confirm Account Deletion</DialogTitle>
+                    <DialogDescription>
+                      Please enter your email to confirm account deletion. This action cannot be undone.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-2">
+                    <Input
+                      placeholder="Enter your email"
+                      value={deleteEmail}
+                      onChange={(e) => setDeleteEmail(e.target.value)}
+                    />
+                    <Button variant="destructive" onClick={handleDeleteAccount}>Delete Account</Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+            </CardContent>
+          </Card>
         </section>
 
       </div>

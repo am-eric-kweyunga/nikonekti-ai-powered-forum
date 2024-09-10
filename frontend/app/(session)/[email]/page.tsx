@@ -142,7 +142,6 @@ export default async function Component() {
       </div>
     </main>
   )
-
 }
 function ChevronRightIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
