@@ -1,10 +1,11 @@
 "use client"
-import { Link } from 'lucide-react'
 import React from 'react'
 import { Button } from '../ui/button'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@auth0/nextjs-auth0/client'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
+import Link from 'next/link'
+import Logo from './logo'
 
 const HeaderComponent = () => {
     const  { user, error, isLoading } = useUser()
@@ -12,8 +13,8 @@ const HeaderComponent = () => {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-white px-4 shadow-sm sm:px-6">
         <div className="flex items-center gap-4">
-          <Link href="#" className="text-2xl font-bold text-blue-700">
-            Nikonekti Forum
+          <Link href={`/${user?.email}`} className="text-2xl font-bold text-blue-700">
+            <Logo />
           </Link>
         </div>
         <div className="flex items-center gap-4">
@@ -22,7 +23,7 @@ const HeaderComponent = () => {
           }}>
             <Avatar>
               <AvatarImage src={`${user?.picture}`} />
-              <AvatarFallback></AvatarFallback>
+              <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>U</AvatarFallback>
             </Avatar>
             <span className="sr-only">Toggle user menu</span>
           </Button>

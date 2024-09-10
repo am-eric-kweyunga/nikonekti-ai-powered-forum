@@ -1,25 +1,11 @@
-import HeaderComponent from '@/components/forum/header';
-import SidebarComponent from '@/components/forum/sidebar';
-import React from 'react'
-import { getSession } from '@auth0/nextjs-auth0';
-import { redirect } from 'next/navigation';
+import React from 'react';
+import SessionProvider from '../../lib/provider';
 
-export default async function SessionLayout({ children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
-    const session = await getSession();
+export default function SessionLayout({ children }: { children: React.ReactNode }) {
 
-    if (!session?.user) {
-        return redirect('/api/auth/login')
-    }
     return (
-        <div className="flex h-svh w-full flex-col bg-white">
-            <HeaderComponent />
-            <div className="flex flex-1 overflow-y-auto">
-                <SidebarComponent />
-                {children}
-            </div>
-        </div>
+        <SessionProvider>
+            {children}
+        </SessionProvider>
     )
 }

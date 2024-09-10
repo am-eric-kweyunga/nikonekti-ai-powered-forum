@@ -1,19 +1,15 @@
-/* eslint-disable @next/next/no-img-element */
-"use client"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Input } from "@/components/ui/input"
 import { JSX, SVGProps } from "react"
-import Image from "next/image"
-import SidebarComponent from "@/components/forum/sidebar"
-import { useUser } from "@auth0/nextjs-auth0/client"
-import { useRouter } from "next/navigation"
+import { getSession } from "@auth0/nextjs-auth0"
+import { UserProfile } from "@auth0/nextjs-auth0/client"
 
-export default function Component() {
-  const { user, error, isLoading } = useUser()
-  const router = useRouter()
+export default async function Component() {
+  const session = await getSession()
+
+  const user: UserProfile | undefined = session?.user
 
   return (
     <main className="flex-1 p-4 sm:p-6">
@@ -36,7 +32,7 @@ export default function Component() {
               >
                 <div className="flex items-center gap-2">
                   <Avatar className="h-8 w-8 bg-blue-700 text-white">
-                    <AvatarFallback>GC</AvatarFallback>
+                    <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>GC</AvatarFallback>
                   </Avatar>
                   <div>
                     <div className="font-medium">Frontend Developers</div>
@@ -66,7 +62,7 @@ export default function Component() {
               >
                 <div className="flex items-center gap-2">
                   <Avatar className="h-8 w-8 bg-blue-700 text-white">
-                    <AvatarFallback>JD</AvatarFallback>
+                    <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>JD</AvatarFallback>
                   </Avatar>
                   <div>
                     <div className="font-medium">John Doe</div>
@@ -95,7 +91,7 @@ export default function Component() {
             <div className="space-y-8">
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10 bg-blue-700 text-white">
-                  <AvatarFallback>JD</AvatarFallback>
+                  <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>JD</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
@@ -109,7 +105,7 @@ export default function Component() {
               </div>
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10 bg-blue-700 text-white">
-                  <AvatarFallback>JA</AvatarFallback>
+                  <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>JA</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
@@ -123,7 +119,7 @@ export default function Component() {
               </div>
               <div className="flex items-start gap-3">
                 <Avatar className="h-10 w-10 bg-blue-700 text-white">
-                  <AvatarFallback>SM</AvatarFallback>
+                  <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>SM</AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
@@ -146,8 +142,8 @@ export default function Component() {
       </div>
     </main>
   )
-}
 
+}
 function ChevronRightIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
   return (
     <svg

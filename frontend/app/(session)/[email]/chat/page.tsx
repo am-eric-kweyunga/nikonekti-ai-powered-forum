@@ -8,7 +8,7 @@ export default function Component() {
       <header className="border-b py-4 px-6 flex items-center gap-4">
         <Avatar className="w-10 h-10 border">
           <AvatarImage src="/placeholder-user.jpg" alt="Mentor" />
-          <AvatarFallback>JD</AvatarFallback>
+          <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>JD</AvatarFallback>
         </Avatar>
         <div>
           <h2 className="text-lg font-medium">John Doe</h2>
@@ -19,7 +19,7 @@ export default function Component() {
         <div className="flex items-start gap-4">
           <Avatar className="w-8 h-8 border">
             <AvatarImage src="/placeholder-user.jpg" alt="Student" />
-            <AvatarFallback>AS</AvatarFallback>
+            <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>AS</AvatarFallback>
           </Avatar>
           <div className="bg-muted rounded-lg p-3 max-w-[75%]">
             <p className="font-medium">Student</p>
@@ -32,7 +32,7 @@ export default function Component() {
         <div className="flex items-start gap-4">
           <Avatar className="w-8 h-8 border">
             <AvatarImage src="/placeholder-user.jpg" alt="Student" />
-            <AvatarFallback>AS</AvatarFallback>
+            <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>AS</AvatarFallback>
           </Avatar>
           <div className="bg-muted rounded-lg p-3 max-w-[75%]">
             <p className="font-medium">Student</p>
@@ -45,7 +45,7 @@ export default function Component() {
         <div className="flex items-start gap-4">
           <Avatar className="w-8 h-8 border">
             <AvatarImage src="/placeholder-user.jpg" alt="Student" />
-            <AvatarFallback>AS</AvatarFallback>
+            <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>AS</AvatarFallback>
           </Avatar>
           <div className="bg-muted rounded-lg p-3 max-w-[75%]">
             <p className="font-medium">Student</p>
@@ -58,7 +58,7 @@ export default function Component() {
         <div className="flex items-start gap-4">
           <Avatar className="w-8 h-8 border">
             <AvatarImage src="/placeholder-user.jpg" alt="Student" />
-            <AvatarFallback>AS</AvatarFallback>
+            <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>AS</AvatarFallback>
           </Avatar>
           <div className="bg-muted rounded-lg p-3 max-w-[75%]">
             <p className="font-medium">Student</p>
@@ -71,7 +71,7 @@ export default function Component() {
         <div className="flex items-start gap-4">
           <Avatar className="w-8 h-8 border">
             <AvatarImage src="/placeholder-user.jpg" alt="Student" />
-            <AvatarFallback>AS</AvatarFallback>
+            <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>AS</AvatarFallback>
           </Avatar>
           <div className="bg-muted rounded-lg p-3 max-w-[75%]">
             <p className="font-medium">Student</p>
@@ -90,13 +90,13 @@ export default function Component() {
           </div>
           <Avatar className="w-8 h-8 border">
             <AvatarImage src="/placeholder-user.jpg" alt="Mentor" />
-            <AvatarFallback>JD</AvatarFallback>
+            <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>JD</AvatarFallback>
           </Avatar>
         </div>
         <div className="flex items-start gap-4">
           <Avatar className="w-8 h-8 border">
             <AvatarImage src="/placeholder-user.jpg" alt="Student" />
-            <AvatarFallback>AS</AvatarFallback>
+            <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>AS</AvatarFallback>
           </Avatar>
           <div className="bg-muted rounded-lg p-3 max-w-[75%]">
             <p className="font-medium">Student</p>

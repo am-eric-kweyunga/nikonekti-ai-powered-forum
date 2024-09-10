@@ -24,7 +24,7 @@ const MentorshipGroups = () => {
                         <div className="flex items-center gap-2">
                             <Avatar className="h-8 w-8 bg-blue-700 text-white overflow-hidden">
                                 <AvatarImage src=''/>
-                                <AvatarFallback>JA</AvatarFallback>
+                                <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>JA</AvatarFallback>
                             </Avatar>
                             <div>
                                 <div className="font-medium">Jane Appleseed</div>
