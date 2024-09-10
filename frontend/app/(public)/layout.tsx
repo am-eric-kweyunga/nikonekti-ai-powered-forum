@@ -1,4 +1,5 @@
 // creating a layout for public group
+import SessionProvider from '@/lib/provider';
 import React from 'react'
 
 export default function PublicLayout({ children,
@@ -7,7 +8,9 @@ export default function PublicLayout({ children,
 }>) {
     return (
         <div className='w-full h-screen'>
-            { children }
+            <SessionProvider>
+                {children}
+            </SessionProvider>
         </div>
     )
 }

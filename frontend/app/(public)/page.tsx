@@ -4,10 +4,11 @@ import { getSession } from '@auth0/nextjs-auth0'
 
 const index = async () => {
   const session = await getSession();
+  
   if ( session?.user ) {
     return redirect(`/${session?.user?.email}`)
   }
-  return redirect('https://forumnikonekti.vercel.app/api/auth/login')
+  return redirect('/api/auth/login')
 }
 
 export default index

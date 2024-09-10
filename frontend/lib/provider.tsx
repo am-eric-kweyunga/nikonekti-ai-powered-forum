@@ -12,7 +12,7 @@ const SessionProvider = async ({ children }: SessionProviderProps) => {
     const session = await getSession();
     
     if (!session?.user) {
-        redirect('/api/auth/login');  // Redirect if no session
+        redirect('/');  // Redirect if no session
         return null;
     }
 

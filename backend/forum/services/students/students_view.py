@@ -73,21 +73,40 @@ def find_student():
 def update_student():
     if request.method == 'POST':
         data = request.json
-        
-        student_email = data.get('email')
+        print(data)
         student_name = data.get('name')
+        student_email = data.get('email')
+        bio = data.get('bio', '')
+        education_level = data.get('educationLevel', '')
+        institution = data.get('institution', '')
+        subjects = data.get('subjects', '')
+        career_interest = data.get('careerInterest', '')
+        dream_job = data.get('dreamJob', '')
+        soft_skills = data.get('softSkills', '')
+        mentorship_help = data.get('mentorshipHelp', '')
+        goals = data.get('goals', '')
+        profileVisibility = data.get('profileVisibility', '')
         
         student_exists = forum.find_student_by_email(email=student_email)
-        if not student_exists:
-            return jsonify({'authorization': 'Un registered student'}), 401
+        print(student_exists)
+        if student_exists == None:
+            return jsonify({'authorization': 'UnAuthorized'}), 401
         
         updates = {
-            'name': student_name,
-            'email': student_email
+            "bio": bio,
+            "educationLevel": education_level,
+            "institution": institution,
+            "subjects": subjects,
+            "career_interest": career_interest,
+            "dream_job": dream_job,
+            "soft_skills": soft_skills,
+            "mentorship_help": mentorship_help,
+            "goals": goals,
+            "profileVisibility": profileVisibility
         }
         student_ = forum.update_student_by_id(student_id=student_exists["_id"], updates=updates)
         
-        return jsonify({"success": "Profile Editted", 'edited fields': str(student_)}), 201
+        return jsonify({"status": "success", 'eddited': str(student_)}), 201
     
 @bp.route('/add_student_profile', methods=['POST'])
 def add_student_profile():

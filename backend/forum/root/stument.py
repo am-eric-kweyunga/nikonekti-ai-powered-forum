@@ -108,6 +108,7 @@ class StudentMentorForum:
     # Find a student by email or a mentor by email
     def find_student_by_email(self, email):
         self.collection = self.db[MONGODB_STUDENTS_COLLECTION_NAME]
+        print(email)
         return self.collection.find_one({"email": email})
 
     def find_mentor_by_email(self, email):
@@ -115,13 +116,13 @@ class StudentMentorForum:
         return self.collection.find_one({"email": email})
 
     # Update a student by ID or a mentor by ID
-    def update_student_by_id(self, student_id, updates):
+    def update_student_by_id(self, student_id, updates: dict):
         self.collection = self.db[MONGODB_STUDENTS_COLLECTION_NAME]
         result = self.collection.update_one(
             {"_id": ObjectId(student_id)},
-            {"$set": {"name": updates["name"], "email": updates["email"]}},
+            {"$set": updates},
         )
-
+        print(result.modified_count)
         return result.modified_count
 
     def update_mentor_by_id(self, mentor_id, updates):

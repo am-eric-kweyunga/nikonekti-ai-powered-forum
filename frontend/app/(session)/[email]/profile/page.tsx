@@ -57,9 +57,10 @@ export default function StudentProfile() {
   }
 
   // Handle form submission (collect and process the form data)
-  const handleFormSubmit = () => {
+  const handleFormSubmit = async () => {
     if (validateForm()) {
       const studentProfileData = {
+        email : user?.email,
         bio,
         educationLevel,
         institution,
@@ -71,8 +72,22 @@ export default function StudentProfile() {
         goals,
         profileVisibility,
       }
-      console.log(studentProfileData)
-      // Send data to the backend or API
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/update_student`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(studentProfileData),
+      });
+
+      const response = await res.json();
+
+      if (response.status !== "success" && response.authorization === 'UnAuthorized') {
+        console.error("Error:", response.message);
+      } else {
+        console.log("Student profile data saved successfully:", response);
+        router.push(`/${user?.email}`)
+      }
     }
   }
 
