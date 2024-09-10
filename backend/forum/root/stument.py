@@ -26,7 +26,7 @@ class StudentMentorForum:
         db_name=MONGODB_DB_NAME,
         connections_collection=MONGODB_CONNECTIONS_COLLECTION_NAME,
         messages_collection=MONGODB_MESSAGES_COLLECTION_NAME,
-        chat_rooms_collection=MONGODB_CHAT_ROOM_COLLECTION_NAME
+        chat_rooms_collection=MONGODB_CHAT_ROOM_COLLECTION_NAME,
     ):
         # Connect to MongoDB server
         self.client = MongoClient(MONGODB_URI)
@@ -35,13 +35,35 @@ class StudentMentorForum:
         self.messages_collection = self.db[messages_collection]
         self.chat_rooms_collection = self.db[chat_rooms_collection]
 
-    def add_student(self, student_name, student_email):
+    def add_student(
+        self,
+        student_name,
+        student_email,
+        bio,
+        education_level,
+        institution,
+        subjects,
+        career_interest,
+        dream_job,
+        soft_skills,
+        mentorship_help,
+        goals,
+    ):
         # connecting to the collection
         self.collection = self.db[MONGODB_STUDENTS_COLLECTION_NAME]
         student = {
             "type": "student",
             "name": student_name,
             "email": student_email,
+            "bio": bio,
+            "education_level": education_level,
+            "institution": institution,
+            "subjects": subjects,
+            "career_interest": career_interest,
+            "dream_job": dream_job,
+            "soft_skills": soft_skills,
+            "mentorship_help": mentorship_help,
+            "goals": goals,
             "created_at": datetime.datetime.now(),
         }
         result = self.collection.insert_one(student)
@@ -63,22 +85,22 @@ class StudentMentorForum:
     ############################################################################################################
     # Message Board
     ############################################################################################################
-    
+
     def post_message(self, room_id, sender_email, message):
         # connecting to the collection
         self.collection = self.db[MONGODB_MESSAGES_COLLECTION_NAME]
         msg = {
-            'room_id': room_id,
-            'sender_email': sender_email,
-            'message': message,
-            'timestamp': datetime.datetime.now()
+            "room_id": room_id,
+            "sender_email": sender_email,
+            "message": message,
+            "timestamp": datetime.datetime.now(),
         }
         result = self.collection.insert_one(msg)
         return result.inserted_id
-    
+
     def get_messages_by_room(self, room_id):
-        return list(self.messages_collection.find({'room_id': room_id}))
-    
+        return list(self.messages_collection.find({"room_id": room_id}))
+
     ###############################################################################################################
     # Student Email and Mentor Email
     ###############################################################################################################
@@ -143,12 +165,12 @@ class StudentMentorForum:
         }
         result = self.connections_collection.insert_one(connection)
         return result.inserted_id
-    
+
     # finding  the connection between student and mentor
     def find_connection_by_student_email(self, student_email):
         self.collection = self.db[MONGODB_CONNECTIONS_COLLECTION_NAME]
         return self.connections_collection.find({"student_email": student_email})
-    
+
     # finding the connection between student and mentor
     def find_connection_by_mentor_email(self, mentor_email):
         self.collection = self.db[MONGODB_CONNECTIONS_COLLECTION_NAME]
@@ -158,23 +180,22 @@ class StudentMentorForum:
     def find_connection_by_id(self, connection_id):
         self.collection = self.db[MONGODB_CONNECTIONS_COLLECTION_NAME]
         return self.connections_collection.find_one({"_id": ObjectId(connection_id)})
-    
+
     # delete the connection between student and mentor
     def delete_connection(self, connection_id):
         self.collection = self.db[MONGODB_CONNECTIONS_COLLECTION_NAME]
         result = self.collection.delete_one({"_id": ObjectId(connection_id)})
         return result.deleted_count
-    
-    
+
     ############################################################################################################
     # Creatin rooms for the chat
     ############################################################################################################
-    
+
     def create_room(self, room_name, participants):
         chat_room = {
-            'room_name': room_name,
-            'created_at': datetime.datetime.now(),
-            'participants': participants
+            "room_name": room_name,
+            "created_at": datetime.datetime.now(),
+            "participants": participants,
         }
         result = self.chat_rooms_collection.insert_one(chat_room)
         return result.inserted_id
@@ -183,23 +204,22 @@ class StudentMentorForum:
         return list(self.chat_rooms_collection.find())
 
     def get_room_by_id(self, room_id):
-        return self.chat_rooms_collection.find_one({'_id': ObjectId(room_id)})
-    
+        return self.chat_rooms_collection.find_one({"_id": ObjectId(room_id)})
+
     def find_room_by_participants(self, participants: list):
-        return self.chat_rooms_collection.find_one({'participants': participants})
-    
+        return self.chat_rooms_collection.find_one({"participants": participants})
+
     def join_room(self, room_id, participant_email):
         self.chat_rooms_collection.update_one(
-            {'_id': ObjectId(room_id)},
-            {'$addToSet': {'participants': participant_email}}
+            {"_id": ObjectId(room_id)},
+            {"$addToSet": {"participants": participant_email}},
         )
-    
+
     def leave_room(self, room_id, participant_email):
         self.chat_rooms_collection.update_one(
-            {'_id': ObjectId(room_id)},
-            {'$pull': {'participants': participant_email}}
+            {"_id": ObjectId(room_id)}, {"$pull": {"participants": participant_email}}
         )
-    
+
     def delete_room(self, room_id):
-        result = self.chat_rooms_collection.delete_one({'_id': ObjectId(room_id)})
+        result = self.chat_rooms_collection.delete_one({"_id": ObjectId(room_id)})
         return result.deleted_count
