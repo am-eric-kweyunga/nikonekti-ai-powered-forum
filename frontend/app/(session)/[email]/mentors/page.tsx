@@ -76,13 +76,13 @@ export default function Component() {
               </div>
 
               <div className='flex items-center gap-1 h-full'>
-                <Button variant={"outline"} className='flex h-12 w-12 items-center rounded-full'>
+                <Button variant={"outline"} size={'icon'} className='flex items-center rounded-full'>
                   <PhoneIcon className='h-4 w-4' />
                 </Button>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <Button variant={"outline"} className='flex h-12 w-12 items-center rounded-full'>
+                    <Button variant={"outline"} size={'icon'} className='flex items-center rounded-full'>
                       <DotsVerticalIcon />
                     </Button>
                   </DropdownMenuTrigger>
@@ -97,7 +97,7 @@ export default function Component() {
             </CardHeader>
 
             {/* Card Content */}
-            <CardContent className='w-full h-full py-5 overflow-auto'>
+            <CardContent className=' h-full py-5 w-full overflow-y-auto'>
               <div className="flex flex-col gap-2">
                 {messageList.map(msg => (
                   <div key={msg.id} className={`flex items-start gap-2 ${msg.sender === "mentor" ? "justify-start" : "justify-end"}`}>
@@ -123,23 +123,33 @@ export default function Component() {
 
             {/* Card Footer */}
             <CardFooter className='w-full h-auto bg-inherit bottom-0 p-3'>
-              <div className="w-full flex gap-2 justify-center items-center">
-                <Button variant={'ghost'} className='h-8 w-8 rounded-full relative'>
-                  <FaceIcon className='absolute h-8 w-8 text-gray-500' />
-                </Button>
+              <div className="w-full flex gap-2 justify-between items-center">
+
+                <div className='flex items-center gap-2'>
+                  <Button variant={'ghost'} size="icon" className=' rounded-full relative'>
+                    <FaceIcon className='absolute h-8 w-8 text-gray-500' />
+                  </Button>
+                </div>
+
                 <AutosizeTextarea
-                  className={`border resize-none transition-all ease-linear duration-300 ${message ? " transition-all ease-linear duration-300" : "!rounded-full transition-all ease-linear duration-300"}`}
+                  maxHeight={150}
+                  minHeight={10}
+                  className={`border px-5 w-full transition-all ease-linear duration-300 ${message ? " transition-all ease-linear duration-300" : "!rounded-full !h-10 transition-all ease-linear duration-300"}`}
                   placeholder="Type your message..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
-                <Button
-                  variant={'default'}
-                  className='h-10 w-10 rounded-full relative bg-blue-700/85 hover:bg-blue-700/80'
-                  onClick={handleSend}
-                >
-                  <SendHorizontalIcon className='absolute h-4 w-4 text-white' />
-                </Button>
+
+                <div>
+                  <Button
+                    variant={'default'}
+                    size="icon"
+                    className='rounded-full relative bg-blue-700/85 hover:bg-blue-700/80'
+                    onClick={handleSend}
+                  >
+                    <SendHorizontalIcon className=' text-white' />
+                  </Button>
+                </div>
               </div>
             </CardFooter>
           </Card>
