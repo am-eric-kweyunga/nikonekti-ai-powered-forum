@@ -6,8 +6,8 @@ const Logo: React.FC = () => {
       <div className="flex items-center justify-center h-auto gap-2 text-lg font-bold md:px-4 text-white">
         <Image
           src="/images/nikonekti/face.svg"
-          width={45}
-          height={45}
+          width={35}
+          height={35}
           alt="Nikonekti"
           className="rounded-full"
         />
