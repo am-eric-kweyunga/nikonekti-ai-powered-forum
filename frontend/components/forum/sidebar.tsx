@@ -4,7 +4,7 @@ import React from 'react'
 import { FaHome, FaChalkboardTeacher, FaEnvelope, FaComments, FaBookOpen, FaCalendarAlt, FaInfoCircle, FaBookReader } from 'react-icons/fa'
 import { usePathname } from 'next/navigation'
 import { useUser } from '@auth0/nextjs-auth0/client';
-const SidebarComponent = ({ className, open, setOpen }: { className?: string, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>> }) => {
+const SidebarComponent = ({ className, open, setOpen }: { className?: any, open: any, setOpen: any }) => {
 
   const pathname = usePathname()
   const { user } = useUser()
