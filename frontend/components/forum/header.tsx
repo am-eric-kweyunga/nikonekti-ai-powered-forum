@@ -60,7 +60,7 @@ const MobileSidebar = () => {
   const { user, error, isLoading } = useUser()
 
   const [open, setOpen] = React.useState(false)
-
+  const route = useRouter()
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild className='md:hidden block'>
@@ -70,70 +70,67 @@ const MobileSidebar = () => {
       </SheetTrigger>
       <SheetContent side="left" className=" sm:w-[420px]">
         <SheetHeader className='py-5'>
-          <SheetTitle>
-            {/* <Link href={`/${user?.email}`} className="text-2xl font-bold text-blue-700">
-              <Logo />
-            </Link> */}
-          </SheetTitle>
           <SheetDescription className='py-3'>
             <div className="flex items-center justify-center gap-2 w-full">
-              <Button variant="outline" size="lg" className='text-lg font-semibold'>
+              <Button variant="outline" size="lg" className='text-lg font-semibold'
+
+                onClick={() => route.push('/api/auth/logout')}>
                 Logout
               </Button>
-            </div>
-          </SheetDescription>
-        </SheetHeader>
+          </div>
+        </SheetDescription>
+      </SheetHeader>
 
-        <div className='w-full h-full overflow-hidden'>
-          <nav className={`w-full flex flex-col bg-white p-5`}>
-            <div className="space-y-2 flex flex-col gap-2 justify-center items-start">
-              <Link
-                href={`/${user?.email}`}
-                className="flex flex-row-reverse justify-between w-full items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
-                onClick={() => setOpen(false)}
-              >
-                <FaHome /> Home
-              </Link>
-              <Link
-                href={`/${user?.email}/mentors`}
-                className="flex  flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
-                onClick={() => setOpen(false)}
-              >
-                <FaChalkboardTeacher /> Mentors
-              </Link>
-              <Link
-                href="#"
-                className="flex  flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
-                onClick={() => setOpen(false)}
-              >
-                <FaComments /> Messages
-              </Link>
-              <Link
-                href="#"
-                className="flex  flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
-                onClick={() => setOpen(false)}
-              >
-                <FaBookOpen /> Forums
-              </Link>
-              <Link
-                href="#"
-                className="flex flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
-                onClick={() => setOpen(false)}
-              >
-                <FaBookReader /> Resources
-              </Link>
-              <Link
-                href="#"
-                className="flex  flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
-                onClick={() => setOpen(false)}
-              >
-                <FaCalendarAlt /> Events
-              </Link>
-            </div>
-          </nav>
-        </div>
-      </SheetContent>
-    </Sheet>
+      <div className='w-full h-full overflow-hidden'>
+        <nav className={`w-full flex flex-col bg-white p-5`}>
+          <div className="space-y-2 flex flex-col gap-2 justify-center items-start">
+            <Link
+              href={`/${user?.email}`}
+              className="flex flex-row-reverse justify-between w-full items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
+              onClick={() => setOpen(false)}
+            >
+              <FaHome /> Home
+            </Link>
+            <Link
+              href={`/${user?.email}/mentors`}
+              className="flex  flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
+              onClick={() => setOpen(false)}
+            >
+              <FaChalkboardTeacher /> Mentors
+            </Link>
+            <Link
+              href="#"
+              className="flex  flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
+              onClick={() => setOpen(false)}
+            >
+              <FaComments /> Messages
+            </Link>
+            <Link
+              href="#"
+              className="flex  flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
+              onClick={() => setOpen(false)}
+            >
+              <FaBookOpen /> Forums
+            </Link>
+            <Link
+              href="#"
+              className="flex flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
+              onClick={() => setOpen(false)}
+            >
+              <FaBookReader /> Resources
+            </Link>
+            <Link
+              href="#"
+              className="flex  flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
+              onClick={() => setOpen(false)}
+            >
+              <FaCalendarAlt /> Events
+            </Link>
+          </div>
+        </nav>
+      </div>
+    </SheetContent>
+    </Sheet >
   )
 }
 
