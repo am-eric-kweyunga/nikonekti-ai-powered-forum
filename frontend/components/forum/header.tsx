@@ -17,6 +17,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import SidebarComponent from './sidebar'
+import { FaHome, FaChalkboardTeacher, FaComments, FaBookOpen, FaBookReader, FaCalendarAlt } from 'react-icons/fa'
 
 const HeaderComponent = () => {
   const { user, error, isLoading } = useUser()
@@ -83,7 +84,52 @@ const MobileSidebar = () => {
         </SheetHeader>
 
         <div className='w-full h-full overflow-hidden'>
-          <SidebarComponent open={open} setOpen={setOpen} className={`text-nowrap !border-none !w-auto !block`} />
+          <nav className={`w-full md:flex flex-col bg-white p-5 sm:flex`}>
+            <div className="space-y-2">
+              <Link
+                href={`/${user?.email}`}
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
+                onClick={() => setOpen(false)}
+              >
+                <FaHome /> Home
+              </Link>
+              <Link
+                href={`/${user?.email}/mentors`}
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
+                onClick={() => setOpen(false)}
+              >
+                <FaChalkboardTeacher /> Mentors
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
+                onClick={() => setOpen(false)}
+              >
+                <FaComments /> Messages
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
+                onClick={() => setOpen(false)}
+              >
+                <FaBookOpen /> Forums
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
+                onClick={() => setOpen(false)}
+              >
+                <FaBookReader /> Resources
+              </Link>
+              <Link
+                href="#"
+                className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
+                onClick={() => setOpen(false)}
+              >
+                <FaCalendarAlt /> Events
+              </Link>
+            </div>
+          </nav>
         </div>
 
         <SheetFooter>

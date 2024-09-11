@@ -4,13 +4,13 @@ import React from 'react'
 import { FaHome, FaChalkboardTeacher, FaEnvelope, FaComments, FaBookOpen, FaCalendarAlt, FaInfoCircle, FaBookReader } from 'react-icons/fa'
 import { usePathname } from 'next/navigation'
 import { useUser } from '@auth0/nextjs-auth0/client';
-const SidebarComponent = ({ className, open, setOpen }: { className?: any, open: any, setOpen: any }) => {
+const SidebarComponent = ({setOpen }: {setOpen: any }) => {
 
   const pathname = usePathname()
   const { user } = useUser()
 
   return (
-    <nav className={`${className} hidden w-52 md:flex flex-col border-r bg-white p-4 sm:flex` }>
+    <nav className={` hidden w-52 md:flex flex-col border-r bg-white p-4 sm:flex` }>
       <div className="space-y-2">
         <Link
           href={`/${user?.email}`}
