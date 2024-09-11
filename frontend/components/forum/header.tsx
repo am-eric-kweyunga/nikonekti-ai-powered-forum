@@ -71,13 +71,13 @@ const MobileSidebar = () => {
       <SheetContent side="left" className=" sm:w-[420px]">
         <SheetHeader className='py-5'>
           <SheetTitle>
-            <Link href={`/${user?.email}`} className="text-2xl font-bold text-blue-700">
+            {/* <Link href={`/${user?.email}`} className="text-2xl font-bold text-blue-700">
               <Logo />
-            </Link>
+            </Link> */}
           </SheetTitle>
           <SheetDescription className='py-3'>
             <div className="flex items-center justify-center gap-2 w-full">
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="lg" className='text-lg font-semibold'>
                 Logout
               </Button>
             </div>
