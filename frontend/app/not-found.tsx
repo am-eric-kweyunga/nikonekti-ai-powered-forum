@@ -45,7 +45,7 @@ export default function Custom404() {
         animate="visible"
         className="text-center"
       >
-        <motion.div variants={itemVariants} className="mb-8">
+        <motion.div variants={itemVariants} className="mb-8 flex justify-center items-center">
           <motion.svg
             width="230"
             height="230"
