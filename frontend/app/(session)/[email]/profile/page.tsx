@@ -327,7 +327,7 @@ export default function StudentProfile() {
           <CardHeader>
             <CardTitle className='text-black'>Save Profile</CardTitle>
           </CardHeader>
-          <CardContent className='flex gap-2'>
+          <CardContent className='flex gap-2 flex-row md:flex-col lg:flex-row'>
             <Button variant={"secondary"} className='bg-blue-700/55 hover:bg-blue-700/45 text-white' onClick={handleFormSubmit}>Save Profile</Button>
             <Button variant={"outline"} className='' onClick={() => router.push("/why-profile")}>Learn about your profile</Button>
           </CardContent>

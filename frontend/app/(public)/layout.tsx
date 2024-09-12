@@ -1,4 +1,5 @@
 import React from 'react'
+import { Toaster } from "@/components/ui/toaster"
 
 export default function PublicLayout({ children,
 }: Readonly<{
@@ -7,6 +8,7 @@ export default function PublicLayout({ children,
     return (
         <div className='w-full h-screen'>
             {children}
+            <Toaster />
         </div>
     )
 }

@@ -69,19 +69,36 @@ class StudentMentorForum:
         result = self.collection.insert_one(student)
         return result.inserted_id
 
-    def add_mentor(self, mentor_name, mentor_email, expertise):
-        # connecting to the collection
+    def add_mentor(self, name, email, location, occupation, experience, interests, goals, availability, additional_info, ratings, image_path):
         self.collection = self.db[MONGODB_MENTORS_COLLECTION_NAME]
         mentor = {
             "type": "mentor",
-            "name": mentor_name,
-            "email": mentor_email,
-            "expertise": expertise,
+            "name": name,
+            "email": email,
+            "location": location,
+            "occupation": occupation,
+            "experience": experience,
+            "interests": interests,
+            "goals": goals,
+            "availability": availability,
+            "additional_info": additional_info,
+            "ratings": ratings,
+            "image_path": image_path,
             "created_at": datetime.datetime.now(),
         }
         result = self.collection.insert_one(mentor)
         return result.inserted_id
-
+    
+    def add_rating(self, mentor_id, rating):
+        # Connecting to the collection
+        self.collection = self.db[MONGODB_MENTORS_COLLECTION_NAME]
+        
+        # Add the new rating to the mentor's document
+        result = self.collection.update_one(
+            {"_id": mentor_id},
+            {"$push": {"ratings": rating}}
+        )
+        return result.modified_count
     ############################################################################################################
     # Message Board
     ############################################################################################################

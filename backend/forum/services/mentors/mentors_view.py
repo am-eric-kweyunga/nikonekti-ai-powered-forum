@@ -1,4 +1,5 @@
 # system imports
+import os
 from flask import Blueprint, jsonify, request
 import datetime
 
@@ -17,23 +18,32 @@ bp = Blueprint(name, __name__)
 @bp.route('/add_mentor', methods=['POST'])
 def add_mentor():
     if request.method == 'POST':
-        data = request.json
         
-        mentor_name = data.get('name')
-        mentor_email = data.get('email')
-        expertise = data.get('expertise')
-        
-        if not mentor_name or not mentor_email or not expertise:
-            return jsonify({'error': 'Missing required fields'}), 400
+        name = request.form.get('name')
+        email = request.form.get('email')
+        location = request.form.get('location')
+        occupation = request.form.get('occupation')
+        experience = request.form.get('experience')
+        interests = request.form.get('interests')
+        goals = request.form.get('goals')
+        availability = request.form.get('availability')
+        additional_info = request.form.get('additionalInfo')
+        ratings = int(request.form.get('ratings', 0))
+        image = request.form.get('image')
 
-        mentor_exists = forum.find_mentor_by_email(email=mentor_email)
+        if not name or not email or not location or not occupation or not experience or not interests or not goals or not availability:
+            return jsonify({'error': 'Missing required fields'})
+
+        mentor_exists = forum.find_mentor_by_email(email=email)
         if mentor_exists:
-            return jsonify({'authorization': 'Authorized'}), 400
+            return jsonify({'authorization': 'Email already taken, try using another email'})
+
+        mentor_id = forum.add_mentor(
+            name, email, location, occupation, experience, interests, goals, availability, additional_info, ratings, image
+        )
         
-        mentor_id = forum.add_mentor(mentor_name, mentor_email, expertise)
-        
-        return jsonify({'mentor_id': str(mentor_id)}), 201
-    
+        return jsonify({"status": "success", "mentor_id": str(mentor_id)}), 201
+
     return jsonify({'error': 'Method not allowed'}), 405
 
 

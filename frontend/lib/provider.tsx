@@ -8,7 +8,7 @@ interface SessionProviderProps {
 }
 
 const SessionProvider = async ({ children }: SessionProviderProps) => {
-    const cookieStore = cookies();  // Access server-side cookies
+    const cookieStore = cookies();
     const savedUserCookie = cookieStore.get('userAuth');
 
     if (savedUserCookie) {
