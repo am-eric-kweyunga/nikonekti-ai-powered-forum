@@ -53,8 +53,8 @@ def send_verification_email():
     
     # HTML content
     html = email_template.html.format(mentor_name=mentor_name, verification_url=verification_url)
-    
-    html_content = MIMEText(html, 'html')
+    html_utf8 = html.encode('utf-8')
+    html_content = MIMEText(html_utf8, 'html', 'utf-8')
     msg.attach(html_content)
     
     try: 
@@ -75,7 +75,7 @@ def send_verification_email():
     
 @bp.route('/verify-email', methods=['POST'])
 def verify_email():
-    token = request.json().get('token')
+    token = request.json.get('token')
     try:
         # Deserialize token (validate token and extract email)
         email = serializer.loads(token, salt=os.getenv("SECURITY_PASSWORD_SALT"), max_age=3600)  # Token valid for 1 hour

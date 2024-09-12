@@ -6,7 +6,7 @@ html = """
                     <table width="600" align="center" cellpadding="0" cellspacing="0" border="0" style="background-color: #ffffff; padding: 20px; border-radius: 10px;">
                         <tr>
                             <td style="text-align: center; padding-bottom: 20px;">
-                                <img src="https://utfs.io/f/42aa0487-636c-48de-9e18-6466874aaccb-1v719.svg" alt="Nikonekti" style="max-width: 150px;">
+                                <img src="https://utfs.io/f/e7488cb4-5a22-4694-b726-edf1cd0c4ed4-g3v3k0.png" alt="Nikonekti" style="max-width: 150px;">
                             </td>
                         </tr>
                         <tr>
@@ -35,7 +35,7 @@ html = """
                         <tr>
                             <td style="text-align: center; padding-top: 20px; border-top: 1px solid #e0e0e0;">
                                 <p style="color: #999999; font-size: 14px;">
-                                    © 2024 Nikonekti - Empowering Tanzania's youth future
+                                    &copy; 2024 Nikonekti - Empowering Tanzania's youth future
                                     <br>
                                     <a href="https://nikonekti.com/privacy-policy" style="color: #007bff; text-decoration: none;">Privacy Policy</a>
                                     |
@@ -48,4 +48,4 @@ html = """
             </tr>
         </table>
     </div>
-    """
+"""
