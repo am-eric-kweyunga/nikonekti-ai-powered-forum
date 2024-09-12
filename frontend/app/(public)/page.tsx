@@ -14,7 +14,7 @@ export default function LogoutConfirmation() {
   const router = useRouter()
 
   if (user) {
-    return router.push(`/${user?.email}`)
+    return router.push(`/student`)
   } else if (isLoading) {
     return <Loading isLoading={isLoading} />
   } else if (error) {

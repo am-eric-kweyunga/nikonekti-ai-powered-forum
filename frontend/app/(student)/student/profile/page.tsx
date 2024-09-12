@@ -103,7 +103,7 @@ export default function StudentProfile() {
           description: "Your profile has been updated successfully.",
         })
         console.log("Student profile data saved successfully:", response);
-        router.push(`/${user?.email}`)
+        router.push(`/student`)
       }
     }
   }

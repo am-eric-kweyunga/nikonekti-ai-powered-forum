@@ -93,14 +93,14 @@ const MobileSidebar = () => {
           <nav className={`w-full flex flex-col bg-white p-5 uppercase`}>
             <div className="space-y-2 flex flex-col gap-2 justify-center items-start">
               <Link
-                href={`/${user?.email}`}
+                href={`/student`}
                 className="flex text-muted-foreground flex-row-reverse justify-between w-full items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
                 onClick={() => setOpen(false)}
               >
                 <FaHome className='text-muted-foreground opacity-40' /> Home
               </Link>
               <Link
-                href={`/${user?.email}/mentors`}
+                href={`/student/mentors`}
                 className="flex text-muted-foreground flex-row-reverse justify-between w-full  items-center gap-2 rounded-md px-3 py-2 text-2xl font-medium hover:bg-gray-100"
                 onClick={() => setOpen(false)}
               >

@@ -13,19 +13,19 @@ const SidebarComponent = () => {
     <nav className={` hidden w-52 md:flex flex-col border-r bg-white p-4 sm:flex` }>
       <div className="space-y-2">
         <Link
-          href={`/${user?.email}`}
+          href={`/student`}
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
         >
           <FaHome /> Home
         </Link>
         <Link
-          href={`/${user?.email}/mentors`}
+          href={`/student/mentors`}
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
         >
           <FaChalkboardTeacher /> Mentors
         </Link>
         <Link
-          href={`/${user?.email}/messages`}
+          href={`/student/messages`}
           className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium hover:bg-gray-100"
         >
           <FaComments /> Messages
