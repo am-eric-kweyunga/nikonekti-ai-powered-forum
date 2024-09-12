@@ -46,6 +46,13 @@ export default function Mentors() {
   }
 
   useEffect(() => {
+    const handleObserver = (entities: IntersectionObserverEntry[]) => {
+      const target = entities[0]
+      if (target.isIntersecting && !loading) {
+        loadMore()
+      }
+    }
+
     const option = {
       root: null,
       rootMargin: "20px",
@@ -54,7 +61,7 @@ export default function Mentors() {
     const observer = new IntersectionObserver(handleObserver, option)
     if (loader.current) observer.observe(loader.current)
     return () => observer.disconnect()
-  }, [])
+  }, [loading, loadMore])
 
   const filteredMentors = mentors.filter(mentor => 
     mentor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -128,4 +135,5 @@ export default function Mentors() {
       </main>
     </div>
   )
+
 }
