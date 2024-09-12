@@ -68,7 +68,7 @@ export default function LogoutConfirmation() {
             href='/api/auth/login'
           >
             <LogIn className="mr-2" size={20} />
-            Continue to career guidance forum
+            Continue to Forum
             {hoveredButton === 'login' && (
               <motion.div
                 className="absolute right-4"

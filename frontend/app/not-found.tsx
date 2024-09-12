@@ -2,11 +2,17 @@
 import { useState, useEffect } from 'react'
 import { motion, useAnimation } from 'framer-motion'
 import { Book, Home } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 
 export default function Custom404() {
   const [hoveredButton, setHoveredButton] = useState<string | null>(null)
   const controls = useAnimation()
 
+  const router = useRouter();
+
+  const handleBack = () => {
+    router.back();
+  };
 
   useEffect(() => {
     controls.start('visible')
@@ -125,10 +131,11 @@ export default function Custom404() {
               whileHover={{ scale: 1.05 }}
               onMouseEnter={() => setHoveredButton('home')}
               onMouseLeave={() => setHoveredButton(null)}
-              href='/'
+              href='#'
+              onClick={handleBack}
             >
               <Home className="mr-2" size={20} />
-              Return to Homepage
+              Go back
               {hoveredButton === 'home' && (
                 <motion.span
                   className="ml-2"
