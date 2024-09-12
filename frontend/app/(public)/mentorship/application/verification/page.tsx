@@ -22,7 +22,7 @@ export default function EmailSentConfirmationPage() {
             Email Verification Sent
           </CardTitle>
           <CardDescription className="text-muted-foreground text-center py-4">
-            We've sent a verification email to complete your Nikonekti mentor registration
+            We&apos;ve sent a verification email to complete your Nikonekti mentor registration
           </CardDescription>
         </CardHeader>
         <CardContent className="py-6 space-y-6">
@@ -30,7 +30,7 @@ export default function EmailSentConfirmationPage() {
             <Mail className="w-16 h-16 text-blue-600 mx-auto mb-4" />
             <h2 className="text-lg font-semibold mb-2">Check Your Email</h2>
             <p className="text-sm text-gray-600 mb-4">
-              We've sent a verification link to your email address. Please check your inbox and click the link to verify your account.
+              We&apos;ve sent a verification link to your email address. Please check your inbox and click the link to verify your account.
             </p>
           </div>
 
@@ -55,16 +55,16 @@ export default function EmailSentConfirmationPage() {
 
           <div className="text-sm text-gray-600 mt-6 space-y-2">
             <p>
-              <strong>Didn't receive the email?</strong> Check your spam folder or try resending the verification email.
+              <strong>Didn&apos;t receive the email?</strong> Check your spam folder or try resending the verification email.
             </p>
             <p>
-              If you're still having trouble, please don't hesitate to contact our support team for assistance.
+              If you&apos;re still having trouble, please don&apos;t hesitate to contact our support team for assistance.
             </p>
           </div>
         </CardContent>
       </Card>
       <footer className="mt-8 text-center text-sm text-gray-600">
-        <p>© 2024 Nikonekti - Empowering Tanzania's Future for Youth</p>
+        <p>© 2024 Nikonekti - Empowering Tanzania&apos;s Future for Youth</p>
       </footer>
     </div>
   )

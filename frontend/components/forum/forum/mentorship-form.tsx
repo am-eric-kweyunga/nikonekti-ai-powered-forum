@@ -321,9 +321,9 @@ export default function NikonektiMentorshipForm() {
                                     <SelectValue placeholder="Select years of experience" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="0-2">0-2 years</SelectItem>
-                                    <SelectItem value="3-5">3-5 years</SelectItem>
-                                    <SelectItem value="6-10">6-10 years</SelectItem>
+                                    <SelectItem value="0-2">1-3 years</SelectItem>
+                                    <SelectItem value="3-5">4-6 years</SelectItem>
+                                    <SelectItem value="6-10">7-10 years</SelectItem>
                                     <SelectItem value="10+">10+ years</SelectItem>
                                 </SelectContent>
                             </Select>
