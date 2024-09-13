@@ -48,6 +48,7 @@ class StudentMentorForum:
         soft_skills,
         mentorship_help,
         goals,
+        profile_visibility
     ):
         # connecting to the collection
         self.collection = self.db[MONGODB_STUDENTS_COLLECTION_NAME]
@@ -64,6 +65,7 @@ class StudentMentorForum:
             "soft_skills": soft_skills,
             "mentorship_help": mentorship_help,
             "goals": goals,
+            "profile_visibility": profile_visibility,
             "created_at": datetime.datetime.now(),
         }
         result = self.collection.insert_one(student)
