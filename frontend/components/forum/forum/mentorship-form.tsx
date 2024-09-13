@@ -71,7 +71,16 @@ export default function NikonektiMentorshipForm() {
         const formDataToSubmit = new FormData();
 
         formDataToSubmit.append('name', formData.name);
-        formDataToSubmit.append('email', formData.email);
+        if (/\S+@\S+\.\S+/.test(formData.email)) {
+            formDataToSubmit.append('email', formData.email);
+        } else {
+            toast({
+                title: 'Error',
+                description: 'Invalid email address.',
+                variant: 'destructive',
+            })
+            return
+        }
         formDataToSubmit.append('location', formData.location);
         formDataToSubmit.append('occupation', formData.occupation);
         formDataToSubmit.append('experience', formData.experience);
