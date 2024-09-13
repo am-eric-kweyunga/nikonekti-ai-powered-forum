@@ -12,25 +12,35 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { DialogHeader } from '@/components/ui/dialog'
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { useToast } from "@/hooks/use-toast"
-import { Circle } from 'lucide-react'
+import { Circle, Loader2 } from 'lucide-react'
+import { fetchStudent } from '@/app/actions/actions'
+import Loading from '@/components/custom/loading'
+import Error500 from '@/components/errors/500'
+
+export interface Student {
+  name?: string;
+  email?: string;
+  bio?: string;
+  educationLevel?: string;
+  institution?: string;
+  subjects?: string;
+  careerInterest?: string;
+  dreamJob?: string;
+  softSkills?: string;
+  mentorshipHelp?: string;
+  goals?: string;
+  profileVisibility?: boolean;
+}
 
 export default function StudentProfile() {
-  const { user } = useUser()
-  const router = useRouter()
-  const { toast } = useToast()
+  const { user, isLoading, error } = useUser();
+  const router = useRouter();
+  const { toast } = useToast();
 
   // States to collect form data
-  const [bio, setBio] = React.useState("")
-  const [educationLevel, setEducationLevel] = React.useState("")
-  const [institution, setInstitution] = React.useState("")
-  const [subjects, setSubjects] = React.useState("")
-  const [careerInterest, setCareerInterest] = React.useState("")
-  const [dreamJob, setDreamJob] = React.useState("")
-  const [softSkills, setSoftSkills] = React.useState("")
-  const [mentorshipHelp, setMentorshipHelp] = React.useState("")
-  const [goals, setGoals] = React.useState("")
-  const [profileVisibility, setProfileVisibility] = React.useState(false)
   const [deleteLoading, setDeleteLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false)
+  const [logoutLoading, setLogoutLoading] = React.useState(false)
 
   // Errors state to manage validation
   const [errors, setErrors] = React.useState({
@@ -48,17 +58,82 @@ export default function StudentProfile() {
   // Email state for account deletion confirmation
   const [deleteEmail, setDeleteEmail] = React.useState("")
 
+  // State to manage edit mode
+  const [editMode, setEditMode] = React.useState(false)
+
+  const [studentProfileData, setStudentProfileData] = React.useState<Student>({
+    name: user?.name as string,
+    email: user?.email as string,
+    bio: "",
+    educationLevel: "",
+    institution: "",
+    subjects: "",
+    careerInterest: "",
+    dreamJob: "",
+    softSkills: "",
+    mentorshipHelp: "",
+    goals: "",
+    profileVisibility: false,
+  })
+
+  // getting the current student profile data
+  const fetchStudentData = async ({ user }: { user: any }) => {
+    if (user?.email) {
+      const response = await fetchStudent({ user })
+      if (response.status === 'success') {
+
+        setStudentProfileData({
+          ...studentProfileData,
+          name: response.student.name,
+          email: response.student.email,
+          bio: response.student.bio,
+          educationLevel: response.student.education_level,
+          institution: response.student.institution,
+          subjects: response.student.subjects,
+          careerInterest: response.student.career_interest,
+          dreamJob: response.student.dream_job,
+          softSkills: response.student.soft_skills,
+          mentorshipHelp: response.student.mentorship_help,
+          goals: response.student.goals,
+          profileVisibility: response.student.profile_visibility,
+
+        })
+      } else if (response.status === 'error') {
+        setEditMode(false)
+        toast({
+          title: "Error",
+          description: response.message,
+          variant: "destructive",
+        })
+      }
+    }
+  }
+
+  React.useEffect(() => {
+    if (user) {
+      setStudentProfileData({
+        ...studentProfileData,
+        name: user.name || 'Unknown',
+        email: user.email || 'Unknown',
+      });
+      fetchStudentData({ user })
+    }
+
+  }, [user]);
+
   const validateForm = () => {
     const newErrors = {
-      bio: bio === "",
-      educationLevel: educationLevel === "",
-      institution: institution === "",
-      subjects: subjects === "",
-      careerInterest: careerInterest === "",
-      dreamJob: dreamJob === "",
-      softSkills: softSkills === "",
-      mentorshipHelp: mentorshipHelp === "",
-      goals: goals === "",
+      email: studentProfileData.email === "",
+      bio: studentProfileData.bio === "",
+      educationLevel: studentProfileData.educationLevel === "",
+      institution: studentProfileData.institution === "",
+      subjects: studentProfileData.subjects === "",
+      careerInterest: studentProfileData.careerInterest === "",
+      dreamJob: studentProfileData.dreamJob === "",
+      softSkills: studentProfileData.softSkills === "",
+      mentorshipHelp: studentProfileData.mentorshipHelp === "",
+      goals: studentProfileData.goals === "",
+      profileVisibility: studentProfileData.profileVisibility === undefined,
     }
     setErrors(newErrors)
     return !Object.values(newErrors).some((error) => error)
@@ -67,19 +142,8 @@ export default function StudentProfile() {
   // Handle form submission (collect and process the form data)
   const handleFormSubmit = async () => {
     if (validateForm()) {
-      const studentProfileData = {
-        email: user?.email,
-        bio,
-        educationLevel,
-        institution,
-        subjects,
-        careerInterest,
-        dreamJob,
-        softSkills,
-        mentorshipHelp,
-        goals,
-        profileVisibility,
-      }
+      setLoading(true)
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/update_student`, {
         method: 'POST',
         headers: {
@@ -89,6 +153,9 @@ export default function StudentProfile() {
       });
 
       const response = await res.json();
+
+      setEditMode(false)
+      setLoading(false)
 
       if (response.status !== "success" && response.authorization === 'UnAuthorized') {
         toast({
@@ -103,7 +170,7 @@ export default function StudentProfile() {
           description: "Your profile has been updated successfully.",
         })
         console.log("Student profile data saved successfully:", response);
-        router.push(`/student`)
+        router.refresh()
       }
     }
   }
@@ -112,6 +179,7 @@ export default function StudentProfile() {
   const handleDeleteAccount = async () => {
     if (deleteEmail === user?.email) {
       setDeleteLoading(true)
+      setEditMode(false)
       const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/delete_student`, {
         method: 'DELETE',
         headers: {
@@ -145,8 +213,21 @@ export default function StudentProfile() {
     }
   }
 
+  const handleInputChange = (field: keyof Student, value: string | boolean) => {
+    setStudentProfileData({
+      ...studentProfileData,
+      [field]: value,
+    })
+  }
+
   const inputClass = (error: boolean) => error ? 'border-red-500' : ''
 
+  if (isLoading) {
+    return <Loading isLoading={isLoading ? true : false} />
+  }
+  if (error) {
+    return <Error500 />;
+  }
   return (
     <div className="w-full max-w-4xl mx-auto py-8 px-4 md:px-6 h-auto">
       <header className="flex  md:flex-row flex-col gap-5 items-center justify-between mb-6">
@@ -163,8 +244,37 @@ export default function StudentProfile() {
           </div>
         </div>
         <div className="flex justify-center items-center gap-4">
-          <Button variant={"outline"}>Edit Profile</Button>
-          <Button variant={"outline"} onClick={() => router.push("/api/auth/logout")}>Logout</Button>
+
+          <Button
+            variant={"outline"}
+            className='!min-w-[120px] !text-sm !font-normal transition-all ease-linear duration-200'
+            onClick={() => {
+              if (editMode) {
+                setEditMode(false)
+                fetchStudentData({ user })
+              } else {
+                setEditMode(true)
+              }
+            }}
+          >
+            {editMode ? "Discard" : "Edit Profile"}
+          </Button>
+
+          <Button
+            variant={"outline"}
+            onClick={() => {
+              router.push("/api/auth/logout")
+              setLogoutLoading(true)
+            }}
+          >
+            {
+              logoutLoading ?
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                :
+                "Logout"
+            }
+          </Button>
+
         </div>
       </header>
 
@@ -194,8 +304,9 @@ export default function StudentProfile() {
           <Textarea
             placeholder="Write your bio here..."
             className={`w-full h-32 resize-none ${inputClass(errors.bio)}`}
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
+            value={studentProfileData.bio}
+            onChange={(e) => handleInputChange('bio', e.target.value)}
+            disabled={!editMode}
           />
         </section>
 
@@ -209,8 +320,9 @@ export default function StudentProfile() {
                 id="educationLevel"
                 placeholder="e.g., O-Level, A-Level, University"
                 className={inputClass(errors.educationLevel)}
-                value={educationLevel}
-                onChange={(e) => setEducationLevel(e.target.value)}
+                value={studentProfileData.educationLevel}
+                disabled={!editMode}
+                onChange={(e) => handleInputChange('educationLevel', e.target.value)}
               />
             </div>
 
@@ -220,8 +332,9 @@ export default function StudentProfile() {
                 id="institution"
                 placeholder="Enter your institution's name"
                 className={inputClass(errors.institution)}
-                value={institution}
-                onChange={(e) => setInstitution(e.target.value)}
+                value={studentProfileData.institution}
+                disabled={!editMode}
+                onChange={(e) => handleInputChange('institution', e.target.value)}
               />
             </div>
 
@@ -231,8 +344,9 @@ export default function StudentProfile() {
                 id="subjects"
                 placeholder="e.g., Science, Business, Arts"
                 className={inputClass(errors.subjects)}
-                value={subjects}
-                onChange={(e) => setSubjects(e.target.value)}
+                value={studentProfileData.subjects}
+                disabled={!editMode}
+                onChange={(e) => handleInputChange('subjects', e.target.value)}
               />
             </div>
 
@@ -242,8 +356,9 @@ export default function StudentProfile() {
                 id="careerInterest"
                 placeholder="e.g., Engineering, Medicine, Business"
                 className={inputClass(errors.careerInterest)}
-                value={careerInterest}
-                onChange={(e) => setCareerInterest(e.target.value)}
+                value={studentProfileData.careerInterest}
+                disabled={!editMode}
+                onChange={(e) => handleInputChange('careerInterest', e.target.value)}
               />
             </div>
 
@@ -253,8 +368,9 @@ export default function StudentProfile() {
                 id="dreamJob"
                 placeholder="e.g., Software Engineer, Doctor, CEO"
                 className={inputClass(errors.dreamJob)}
-                value={dreamJob}
-                onChange={(e) => setDreamJob(e.target.value)}
+                value={studentProfileData.dreamJob}
+                disabled={!editMode}
+                onChange={(e) => handleInputChange('dreamJob', e.target.value)}
               />
             </div>
           </div>
@@ -267,8 +383,9 @@ export default function StudentProfile() {
             <Textarea
               placeholder="Add your skills here... i.e. Communication, leadership, teamwork..."
               className={`w-full h-32 resize-none ${inputClass(errors.softSkills)}`}
-              value={softSkills}
-              onChange={(e) => setSoftSkills(e.target.value)}
+              value={studentProfileData.softSkills}
+              disabled={!editMode}
+              onChange={(e) => handleInputChange('softSkills', e.target.value)}
             />
           </div>
         </section>
@@ -281,8 +398,9 @@ export default function StudentProfile() {
               id="mentorshipHelp"
               placeholder="What do you need help with?"
               className={`w-full h-32 resize-none ${inputClass(errors.mentorshipHelp)}`}
-              value={mentorshipHelp}
-              onChange={(e) => setMentorshipHelp(e.target.value)}
+              value={studentProfileData.mentorshipHelp}
+              disabled={!editMode}
+              onChange={(e) => handleInputChange('mentorshipHelp', e.target.value)}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -291,8 +409,9 @@ export default function StudentProfile() {
               id="goals"
               placeholder="Your short-term and long-term goals"
               className={`w-full h-24 resize ${inputClass(errors.goals)}`}
-              value={goals}
-              onChange={(e) => setGoals(e.target.value)}
+              value={studentProfileData.goals}
+              disabled={!editMode}
+              onChange={(e) => handleInputChange('goals', e.target.value)}
             />
           </div>
         </section>
@@ -312,8 +431,10 @@ export default function StudentProfile() {
                   <label htmlFor="profile-visibility" className="font-medium">Profile Visibility</label>
                   <Switch
                     id="profile-visibility"
-                    checked={profileVisibility}
-                    onCheckedChange={() => setProfileVisibility(!profileVisibility)}
+                    checked={studentProfileData.profileVisibility}
+                    className="data-[state=checked]:bg-blue-700/55 data-[state=unchecked]:bg-gray-500"
+                    disabled={!editMode}
+                    onCheckedChange={() => handleInputChange('profileVisibility', !studentProfileData.profileVisibility)}
                   />
                 </div>
               </div>
@@ -328,8 +449,23 @@ export default function StudentProfile() {
             <CardTitle className='text-black'>Save Profile</CardTitle>
           </CardHeader>
           <CardContent className='flex gap-2 flex-row md:flex-col lg:flex-row'>
-            <Button variant={"secondary"} className='bg-blue-700/55 hover:bg-blue-700/45 text-white' onClick={handleFormSubmit}>Save Profile</Button>
-            <Button variant={"outline"} className='' onClick={() => router.push("/why-profile")}>Learn about your profile</Button>
+            <Button
+              variant={"secondary"}
+              className='bg-blue-700/55 hover:bg-blue-700/45 text-white !min-w-28'
+              onClick={handleFormSubmit}
+              disabled={!editMode}
+            >
+              {
+                loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : "Save Profile"
+              }
+            </Button>
+            <Button
+              variant={"outline"}
+              className=''
+              onClick={() => router.push("/why-profile")}
+            >
+              Learn about your profile
+            </Button>
           </CardContent>
           <CardFooter>
             <p className='text-xs'>You can always come to Update your profile Information</p>

@@ -23,11 +23,12 @@ def add_student():
         education_level = data.get('educationLevel', '')
         institution = data.get('institution', '')
         subjects = data.get('subjects', '')
-        career_interest = data.get('careerInterest', '')
+        career_interest = data.get('careerInterest, ''')
         dream_job = data.get('dreamJob', '')
         soft_skills = data.get('softSkills', '')
         mentorship_help = data.get('mentorshipHelp', '')
         goals = data.get('goals', '')
+        profile_visibility = data.get('profileVisibility', True)
         
         student_exists = forum.find_student_by_email(email=student_email)
         if student_exists:
@@ -44,48 +45,51 @@ def add_student():
             dream_job=dream_job,
             soft_skills=soft_skills,
             mentorship_help=mentorship_help,
-            goals=goals
+            goals=goals,
+            profile_visibility= profile_visibility
         )
         
-        return jsonify({"status": "success", 'student_id': str(student_id)}), 201
+        return jsonify({"status": "success"}), 201
     
-    return jsonify({'error': 'Method not allowed'}), 405
+    return jsonify({"status": "error", 'error': 'Method not allowed'}), 405
 
 
 @bp.route('/find_student', methods=['POST'])
 def find_student():
     if request.method == 'POST':
         data = request.json
+        print(data)
 
         student_email = data.get('email')
 
         student = forum.find_student_by_email(email=student_email)
         if student:
             serialized_student = student_schema.dump(student)
-            return jsonify({'authorization': 'registered', 'student': serialized_student }), 200
+            return jsonify({'status': "success",'authorization': 'registered', 'student': serialized_student }), 200
 
-        return jsonify({'authorization': 'Un registered student'}), 401
+        return jsonify({'status': "error", 'authorization': 'Student not found'}), 401
 
-    return jsonify({'error': 'Method not allowed'}), 405
+    return jsonify({'status': "error", 'error': 'Method not allowed'}), 405
 
 
 @bp.route('/update_student', methods=['POST'])
 def update_student():
     if request.method == 'POST':
+        
         data = request.json
+        
         print(data)
-        student_name = data.get('name')
         student_email = data.get('email')
-        bio = data.get('bio', '')
-        education_level = data.get('educationLevel', '')
-        institution = data.get('institution', '')
-        subjects = data.get('subjects', '')
-        career_interest = data.get('careerInterest', '')
-        dream_job = data.get('dreamJob', '')
-        soft_skills = data.get('softSkills', '')
-        mentorship_help = data.get('mentorshipHelp', '')
-        goals = data.get('goals', '')
-        profileVisibility = data.get('profileVisibility', '')
+        bio = data.get('bio')
+        education_level = data.get('educationLevel')
+        institution = data.get('institution')
+        subjects = data.get('subjects')
+        career_interest = data.get('careerInterest')
+        dream_job = data.get('dreamJob')
+        soft_skills = data.get('softSkills')
+        mentorship_help = data.get('mentorshipHelp')
+        goals = data.get('goals')
+        profile_visibility = data.get('profileVisibility')
         
         student_exists = forum.find_student_by_email(email=student_email)
         print(student_exists)
@@ -94,7 +98,7 @@ def update_student():
         
         updates = {
             "bio": bio,
-            "educationLevel": education_level,
+            "education_level": education_level,
             "institution": institution,
             "subjects": subjects,
             "career_interest": career_interest,
@@ -102,7 +106,7 @@ def update_student():
             "soft_skills": soft_skills,
             "mentorship_help": mentorship_help,
             "goals": goals,
-            "profileVisibility": profileVisibility
+            "profile_visibility": profile_visibility
         }
         student_ = forum.update_student_by_id(student_id=student_exists["_id"], updates=updates)
         

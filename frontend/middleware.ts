@@ -16,7 +16,6 @@ export async function middleware(req: NextRequest) {
     }
 
     return NextResponse.next();
-    
   } else {
     // redirecting to 404 page
     notFound();

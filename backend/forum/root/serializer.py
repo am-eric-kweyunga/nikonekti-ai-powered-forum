@@ -6,11 +6,21 @@ ma = Marshmallow()
 
 # students
 class StudentSchema(ma.Schema):
-    _id = fields.String()
-    type = fields.String()
+    # _id = fields.String()
+    # type = fields.String()
     name = fields.String()
     email = fields.String()
-    created_at = fields.DateTime()
+    bio = fields.String(default='')
+    education_level = fields.String(default='')
+    institution = fields.String(default='')
+    subjects = fields.String(default='')
+    career_interest = fields.String(default='')
+    dream_job = fields.String(default='')
+    soft_skills = fields.String(default='')
+    mentorship_help = fields.String(default='')
+    goals = fields.String(default='')
+    profile_visibility = fields.Boolean(default=True)
+    # created_at = fields.DateTime()
 
 
 # mentors
