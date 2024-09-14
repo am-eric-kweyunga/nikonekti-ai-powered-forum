@@ -63,7 +63,7 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
           variant: 'destructive',
         })
         setTimeout(() => router.push('/mentor'), 3000)
-        
+
       } else {
         setVerificationStatus('error')
         toast({
@@ -85,7 +85,7 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
   }
 
   return (
-    <div className="min-h-screen p-2 md:p-6 bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen p-2 md:p-6 bg-gradient-to-b from-blue-50 to-white flex items-center flex-col justify-center">
       <Card className="max-w-md mx-auto bg-white shadow-lg rounded-lg border-t-4 border-blue-500">
         <CardHeader className="border-b text-black p-6 flex flex-col items-center">
           <CardTitle className="text-xl md:text-2xl font-bold items-center flex flex-col gap-4">
