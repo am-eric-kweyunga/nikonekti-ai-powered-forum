@@ -149,9 +149,9 @@ function Login() {
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-gray-600">
-            Don&apos;t have an account?{" "}
-            <a href="#" className="font-medium text-[#1D58B0] hover:underline">
-              Sign up
+            Don&apos;t have a Mentorship account?{" "}
+            <a href="/mentorship" className="font-medium text-[#1D58B0] hover:underline">
+              Apply for mentorship here
             </a>
           </p>
         </div>
