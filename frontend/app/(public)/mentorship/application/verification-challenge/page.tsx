@@ -56,7 +56,6 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
         })
 
       } else if (response.status === "verified") {
-
         setVerificationStatus('error')
         toast({
           title: 'Error',
@@ -64,8 +63,8 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
           variant: 'destructive',
         })
         setTimeout(() => router.push('/mentor'), 3000)
+        
       } else {
-
         setVerificationStatus('error')
         toast({
           title: 'Error',
