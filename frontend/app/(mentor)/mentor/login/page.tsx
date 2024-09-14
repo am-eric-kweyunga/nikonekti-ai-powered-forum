@@ -21,7 +21,7 @@ function Login() {
     setIsLoading(true)
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/auth/login`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/login`, {
         method: "POST",
         body: JSON.stringify({
           email: loginForm.email,
