@@ -153,7 +153,7 @@ function MentorsInfo({ mentor }: { mentor: Mentor }) {
   return (
     <Dialog>
       <DialogTrigger className="text-blue-700 text-nowrap border-blue-700 hover:bg-blue-700 hover:text-white flex items-center justify-center rounded-md p-2 text-sm font-semibold  border hover:border-white transition-all ease-linear duration-200" >
-        Mentor's Info
+        Mentor&apos;s Info
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
