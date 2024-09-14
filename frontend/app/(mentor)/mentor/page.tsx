@@ -1,9 +1,21 @@
-
+"use client"
+import Loading from "@/components/custom/loading";
 import NavigationBar from "@/components/mentors/navigation-bar"
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { useTokenContext } from "@/lib/token-provider"
+import { useRouter } from "next/navigation";
 
 export default function Mentor() {
+    const { token, setToken, removeToken, isLoading } = useTokenContext();
+    const router = useRouter();
+
+    if (isLoading) {
+        return <Loading isLoading={isLoading} />;
+    }
+    if (!token) {
+        return router.push("/mentor/login");
+    }
     return (
         <div className="flex flex-col min-h-[100dvh] bg-white text-black">
 

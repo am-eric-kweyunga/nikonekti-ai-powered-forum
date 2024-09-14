@@ -45,7 +45,7 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
           description: 'Your email has been verified successfully!',
         })
 
-        setTimeout(() => router.push('/dashboard'), 3000)
+        setTimeout(() => router.push('/mentor'), 3000)
       } else if (response.status === "expired") {
 
         setVerificationStatus('error')
@@ -55,6 +55,15 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
           variant: 'destructive',
         })
 
+      } else if (response.status === "verified") {
+
+        setVerificationStatus('error')
+        toast({
+          title: 'Error',
+          description: response.message,
+          variant: 'destructive',
+        })
+        setTimeout(() => router.push('/mentor'), 3000)
       } else {
 
         setVerificationStatus('error')

@@ -3,6 +3,7 @@ import HeaderComponent from '@/components/forum/header';
 import SidebarComponent from '@/components/forum/sidebar';
 import { getSession } from '@auth0/nextjs-auth0';
 import Error500 from '@/components/errors/500';
+
 interface SessionProviderProps {
     children: React.ReactNode;
 }
