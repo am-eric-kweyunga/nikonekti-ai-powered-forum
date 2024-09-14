@@ -157,7 +157,7 @@ function MentorsInfo({ mentor }: { mentor: Mentor }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Mentor's Info</DialogTitle>
+          <DialogTitle>Mentor&apos;s Info</DialogTitle>
           <DialogDescription className='flex items-center gap-3 py-2'>
             <Avatar>
               <AvatarImage src={mentor.image_path} alt={mentor.name} />
