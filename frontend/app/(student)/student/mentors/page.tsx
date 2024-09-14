@@ -10,7 +10,9 @@ import { Label } from '@/components/ui/label'
 import { toast } from '@/hooks/use-toast'
 
 // sever actions
-import { getStudentsConnections } from '@/utils/actions'
+import { getStudentsConnections, getUser } from '@/utils/actions'
+import Loading from '@/components/custom/loading'
+import { list } from 'postcss'
 
 // Define a type for the mentor data
 interface Mentor {
@@ -23,12 +25,21 @@ interface Mentor {
   location: string
 }
 
+interface User {
+  id: number
+  name: string
+  email: string
+  picture: string
+}
+
 export default function Mentors() {
   const [mentors, setMentors] = useState<Mentor[]>([])
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [hasMore, setHasMore] = useState(true)
   const loader = useRef<HTMLDivElement | null>(null)
+
+  const [user, setUser] = useState<User>()
 
   const [connections, setConnections] = useState<any[]>([])
 
@@ -71,24 +82,46 @@ export default function Mentors() {
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
       root: null,
-      rootMargin: '80px',
+      rootMargin: '200px',
       threshold: 1.0
     })
 
     if (loader.current) observer.observe(loader.current)
     return () => observer.disconnect()
-  }, [hasMore])
+  }, [loading, user, hasMore])
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUser()
+      if (user) {
+        setUser({
+          id: user.sub,
+          name: user.name,
+          email: user.email,
+          picture: user.picture
+        })
+      }
+    }
+    fetchUser()
+  }, [hasMore, loading, mentors])
 
   const filteredMentors = mentors.filter(mentor =>
     mentor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     mentor.occupation.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <Loader2 className="animate-spin" />
+      </div>
+    )
+  }
   return (
     <div className="min-h-full bg-white dark:bg-gray-900 w-full">
       <header className="bg-white border-b p-2 md:p-4 sticky top-0 z-10 w-full flex justify-center">
         <div className="container mx-auto flex md:flex-row flex-col justify-between items-center w-full py-2">
-          <h1 className="text-2xl font-bold text-blue-700 md:pb-0 pb-3 uppercase">Nikonekti Mentors</h1>
+          <h1 className="text-2xl font-bold text-blue-700 md:pb-0 pb-3 uppercase">Mentors</h1>
           <div className="flex items-center space-x-4 w-full md:w-auto">
             <div className="relative !w-full md:w-auto min-w-2xl flex items-center justify-center">
               <Input
@@ -109,8 +142,13 @@ export default function Mentors() {
       </header>
 
       <main className="container mx-auto py-4 md:py-8 px-2 md:px-10">
+        {/* <div>
+          { 
+            JSON.stringify(connections)
+          }
+        </div> */}
         <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
-          {filteredMentors.map((mentor, index) => (
+          {connections && filteredMentors.map((mentor, index) => (
             <div key={index} className="bg-white min-w-80 dark:bg-gray-800 rounded-lg border overflow-hidden transition-transform duration-300 hover:scale-[1.02]">
               <div className="p-6">
                 <div className="flex items-center space-x-4">
@@ -134,13 +172,12 @@ export default function Mentors() {
                   </div>
                 </div>
                 <div className="mt-6 flex justify-between items-center">
-                  <ConnectWithMentor mentor={mentor} />
+                  {user && <ConnectWithMentor mentor={mentor} user={user} connections={connections} />}
                   <MentorsInfo mentor={mentor} />
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          ))}        </div>
         {loading && <p className="text-center mt-4 text-blue-600 "> Loading mentors... </p>}
         <div ref={loader} />
       </main>
@@ -207,7 +244,7 @@ function MentorsInfo({ mentor }: { mentor: Mentor }) {
   )
 }
 
-function ConnectWithMentor({ mentor }: { mentor: Mentor }) {
+function ConnectWithMentor({ mentor, user, connections }: { mentor: Mentor, user: User, connections: any[] }) {
 
   const [isLoading, setIsLoading] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
@@ -229,7 +266,7 @@ function ConnectWithMentor({ mentor }: { mentor: Mentor }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          // student_email: user?.email,
+          student_email: user.email,
           mentor_email: mentor.email,
           note: note
         })
@@ -264,10 +301,18 @@ function ConnectWithMentor({ mentor }: { mentor: Mentor }) {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger className="border-blue-700 text-nowrap min-w-32 bg-blue-700 hover:bg-blue-600 text-white flex items-center justify-center rounded-md p-2 text-sm font-semibold  border  transition-all ease-linear duration-200" >
-        <Plus className="mr-2 h-4 w-4 border" />
-        Connect
-      </DialogTrigger>
+      {connections.map((connection: any) => connection.mentor_email).includes(mentor.email) ? (
+
+        <DialogTrigger disabled className="border-green-600 text-nowrap min-w-32 bg-white hover:bg-white/30 text-green-600 flex items-center justify-center rounded-md p-2 text-sm font-semibold  border  transition-all ease-linear duration-200" >
+          <Plus className="mr-2 h-4 w-4 border" />
+          <Badge variant="secondary" className=" uppercase bg-green-200">Connected</Badge>
+        </DialogTrigger>
+      ) : (
+        <DialogTrigger className="border-blue-700 text-nowrap min-w-32 bg-blue-700 hover:bg-blue-600 text-white flex items-center justify-center rounded-md p-2 text-sm font-semibold  border  transition-all ease-linear duration-200" >
+          <Plus className="mr-2 h-4 w-4 border" />
+          Connect
+        </DialogTrigger>
+      )}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className='flex items-center gap-2'>Connect with <Badge className='bg-white !shadow-none border border-black/20 text-lg text-black'>{mentor.name}</Badge></DialogTitle>

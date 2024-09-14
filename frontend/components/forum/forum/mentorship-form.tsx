@@ -412,9 +412,9 @@ export default function NikonektiMentorshipForm() {
                                     checked={formData.privacyAccepted}
                                     onChange={handleCheckboxChange}
                                     required
-                                    className="mr-2"
+                                    className="mr-2 text-nowrap"
                                 />
-                                I accept the <a href="/privacy-policy" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer"> Privacy Policy</a> and <a href="/terms-of-service" className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">Terms of Service</a>.
+                                I accept the <a href="/privacy-policy" className="text-blue-600 hover:underline text-nowrap" target="_blank" rel="noopener noreferrer"> Privacy Policy</a> and <a href="/terms-of-service" className="text-blue-600 hover:underline text-nowrap" target="_blank" rel="noopener noreferrer">Terms of Service</a>.
                             </Label>
                         </div>
 
