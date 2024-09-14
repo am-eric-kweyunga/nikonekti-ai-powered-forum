@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { LogIn, Mail, Lock, Loader2Icon } from 'lucide-react'
 
-function Login(props: { setToken: (arg0: any) => void }) {
+function Login() {
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: ""
@@ -30,7 +30,7 @@ function Login(props: { setToken: (arg0: any) => void }) {
       })
 
       const data = await response.json()
-      props.setToken(data.access_token)
+      
 
     } catch (error) {
       console.error("Login error:", error)
