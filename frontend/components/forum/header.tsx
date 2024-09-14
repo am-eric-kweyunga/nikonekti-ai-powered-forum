@@ -63,7 +63,7 @@ const MobileSidebar = () => {
   const menuItems = [
     { href: '/student', icon: Home, label: 'Home' },
     { href: '/student/mentors', icon: Users, label: 'Mentors' },
-    { href: '#', icon: MessageSquare, label: 'Messages' },
+    { href: '/student/mentors', icon: MessageSquare, label: 'Messages' },
     { href: '#', icon: BookOpen, label: 'Forums' },
     { href: '#', icon: BookText, label: 'Resources' },
     { href: '#', icon: Calendar, label: 'Events' },

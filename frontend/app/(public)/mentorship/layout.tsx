@@ -7,7 +7,7 @@ const ApplicationLayout = async ({ children }: { children: React.ReactNode }) =>
     const session = await getSession()
 
     if (session) {
-        return redirect(`/${session.user.email}/mentors`)
+        return redirect(`/student/mentors`)
     }
 
     return <>{
