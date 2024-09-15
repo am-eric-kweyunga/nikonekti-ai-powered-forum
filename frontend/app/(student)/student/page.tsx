@@ -151,7 +151,7 @@ export default async function CareerGuidanceDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mentors > 0 ? (
+                {mentors && mentors.length > 0 ? (
                   <>
                     {mentors.map((mentor: any, index: number) => (
                       <Link
@@ -161,7 +161,7 @@ export default async function CareerGuidanceDashboard() {
                       >
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src={mentor.image_path} alt={mentor.name} />
+                            <AvatarImage src={mentor.image_path} alt={mentor.name} className="object-cover object-center"/>
                             <AvatarFallback className="bg-[#1D58B0] text-white">
                               {mentor.name ? mentor.name.slice(0, 2) : 'M'}
                             </AvatarFallback>

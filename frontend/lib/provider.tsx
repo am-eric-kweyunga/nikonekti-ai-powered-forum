@@ -25,14 +25,10 @@ const SessionProvider = async ({ children }: SessionProviderProps) => {
                 picture: session?.user?.picture,
             })
         })
-        if (!res.ok) {
-            return (
-                <Error500 />
-            );
-        }
-        
-        const data = await res.json();
 
+        const data = await res.json();
+        
+        
         if (data.status === "success" || data.authorization === 'Authorized') {
             return (
                 <div className="flex h-screen w-full flex-col bg-white">

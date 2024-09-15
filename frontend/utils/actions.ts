@@ -16,6 +16,7 @@ export async function getStudentsConnections() {
     })
         .then(res => res.json())
         .then(data => {
+            
             if (data.status === 'success') {
                 return data.connections
             } else {
@@ -65,6 +66,9 @@ export async function registerStudent() {
             picture: session?.user?.picture,
         })
     })
+    if (!response.ok) {
+        throw new Error('Failed to register student')
+    }
     return response
 }
 
@@ -79,6 +83,9 @@ export async function getMyMentors() {
             student_email: session?.user?.email,
         })
     })
+    if (!response.ok) {
+        throw new Error('Failed to fetch mentors')
+    }
     const data = await response.json()
     return data.mentors
 }
@@ -96,6 +103,9 @@ export async function fetchStudent() {
             student_email: session?.user?.email,
         })
     })
+    if (!response.ok) {
+        throw new Error('Failed to fetch student')
+    }
     const data = await response.json()
     console.log(data)
     return data

@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { AutosizeTextarea } from "@/components/custom/resizable-textarea";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, m } from "framer-motion";
 import { ArrowLeft, PhoneIcon, PlusIcon, SendHorizontalIcon, Search, MoreVertical, Paperclip, Smile, Loader2Icon } from "lucide-react";
 import { useParams, useSearchParams } from 'next/navigation'
 import { getMyMentors } from "@/utils/actions";
@@ -55,7 +55,7 @@ export default function CareerGuidanceChat() {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [mentors, setMentors] = useState<Mentor[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const params = useSearchParams();
@@ -76,16 +76,16 @@ export default function CareerGuidanceChat() {
 
   useEffect(() => {
     try {
-      setLoading(true)
       handleGetMentors()
     } catch (error) {
-      setError("Unable to load mentors. Please try again later.");
-    } finally {
-      setLoading(false)
+      console.error("Error fetching mentors:", error);
     }
-  }, [mentors, loading, mentor_param_mail]);
+  }, []);
 
   useEffect(() => {
+    if (mentors.length > 0) {
+      setLoading(false);
+    }
     if (mentor_param_mail) {
       const mentor = mentors.find((mentor) => mentor.email === mentor_param_mail);
       if (mentor) {
@@ -200,7 +200,7 @@ export default function CareerGuidanceChat() {
                 ) : (
                   <>
                     {
-                      !loading ? (
+                      loading ? (
                         <div className="flex items-center justify-center h-full">
                           <Loader2Icon className="w-6 h-6 text-gray-500 animate-spin" />
                         </div>
