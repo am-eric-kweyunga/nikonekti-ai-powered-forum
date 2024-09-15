@@ -32,3 +32,18 @@ export async function getUser() {
     const session = await getSession()
     return session?.user
 }
+
+export async function getMyMentors() {
+    const session = await getSession()
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/my_mentors`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            student_email: session?.user?.email,
+        })
+    })
+    const data = await response.json()
+    return data.mentors
+}

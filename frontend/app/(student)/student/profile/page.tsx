@@ -16,6 +16,8 @@ import { Circle, Loader2 } from 'lucide-react'
 import { fetchStudent } from '@/app/actions/actions'
 import Loading from '@/components/custom/loading'
 import Error500 from '@/components/errors/500'
+import { getMyMentors } from '@/utils/actions'
+import Link from 'next/link'
 
 export interface Student {
   name?: string;
@@ -41,6 +43,8 @@ export default function StudentProfile() {
   const [deleteLoading, setDeleteLoading] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
   const [logoutLoading, setLogoutLoading] = React.useState(false)
+  const [mentors, setMentors] = React.useState<Mentor[]>([])
+  const [isMyMentoeLoading, setIsMyMentorLoading] = React.useState(false)
 
   // Errors state to manage validation
   const [errors, setErrors] = React.useState({
@@ -109,6 +113,13 @@ export default function StudentProfile() {
     }
   }
 
+  const handleGetMyMentors = async () => {
+    setIsMyMentorLoading(true)
+    const mentors = await getMyMentors()
+    setMentors(mentors)
+    setIsMyMentorLoading(false)
+  }
+
   React.useEffect(() => {
     if (user) {
       setStudentProfileData({
@@ -117,8 +128,8 @@ export default function StudentProfile() {
         email: user.email || 'Unknown',
       });
       fetchStudentData({ user })
+      handleGetMyMentors()
     }
-
   }, [user]);
 
   const validateForm = () => {
@@ -220,6 +231,13 @@ export default function StudentProfile() {
     })
   }
 
+  interface Mentor {
+    name: string
+    email: string
+    image_path: string
+  }
+
+
   const inputClass = (error: boolean) => error ? 'border-red-500' : ''
 
   if (isLoading) {
@@ -282,19 +300,46 @@ export default function StudentProfile() {
 
         {/* Recent Activities Section */}
         <section className="w-full border rounded-lg hover:shadow-lg transition-all duration-300">
-          <h2 className="text-xl font-bold p-4 border-b">Recent Activities</h2>
+          <h2 className="text-xl font-bold p-4 border-b">My Mentors</h2>
           <div className="space-y-4 p-4 overflow-auto max-h-96">
-            {/* Example Activity */}
-            <div className="flex items-start gap-4">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="/placeholder-user.jpg" alt="@shadcn" />
-                <AvatarFallback className='bg-blue-700/20 text-white animate-pulse'>JD</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="font-medium text-sm">Commented on a post</p>
-                <p className="text-muted-foreground text-xs">Great article, really helpful!</p>
-              </div>
-            </div>
+
+            {/* My connections */}
+
+            {
+              !isMyMentoeLoading && mentors.length > 0 ? mentors.map(
+                (m: Mentor, index: any) => (
+                  <div key={index} className="flex items-center gap-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={`${m.image_path}`} alt={`${m.name}`} />
+                      <AvatarFallback className='bg-blue-700/20 text-white animate-pulse uppercase'>
+                        {m.name ? m.name.slice(0, 2) : <>U</>}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <h3 className="text-sm font-semibold">{m.name}</h3>
+                      <p className="text-muted-foreground text-xs">{m.email}</p>
+                    </div>
+                  </div>
+                )) :
+                (
+                  <>
+                    {
+                      isMyMentoeLoading ?
+                        <div className="flex items-center gap-4 justify-center">
+                          <div className="h-12 w-12 rounded-full bg-gray-300 animate-pulse"></div>
+                          <div className="w-48 h-4 bg-gray-300 animate-pulse mb-2">
+                            <div className="h-4 bg-gray-300 animate-pulse mb-2"></div>
+                          </div>
+                        </div>
+                        :
+                        <div className="flex items-center gap-4 justify-center">
+                          <Link href={'/student/mentors'} className='text-blue-700'>Connect with mentors</Link>
+                        </div>
+                    }
+                  </>
+                )
+            }
+
           </div>
         </section>
 
@@ -515,3 +560,11 @@ export default function StudentProfile() {
     </div>
   )
 }
+
+function useEffect(arg0: () => void, arg1: any[]) {
+  throw new Error('Function not implemented.')
+}
+function useState<T>(arg0: never[]): [any, any] {
+  throw new Error('Function not implemented.')
+}
+
