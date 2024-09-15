@@ -61,7 +61,7 @@ def find_student():
         data = request.json
         print(data)
 
-        student_email = data.get("email")
+        student_email = data.get("student_email")
 
         student = forum.find_student_by_email(email=student_email)
         if student:

@@ -25,11 +25,13 @@ class StudentSchema(ma.Schema):
 
 # mentors
 class MentorSchema(ma.Schema):
-    _id = fields.Str()
     type = fields.Str()
     name = fields.Str()
     email = fields.Str()
-    expertise = fields.Str()
+    occupation = fields.Str()
+    ratings = fields.Int()
+    image_path = fields.Str()
+    location = fields.Str()
     created_at = fields.DateTime()
 
 
@@ -38,6 +40,7 @@ class ConnectionSchema(ma.Schema):
     _id = fields.Str()
     student_email = fields.Str()
     mentor_email = fields.Str()
+    connection_note  = fields.Str()
     connected_at = fields.DateTime()
 
 

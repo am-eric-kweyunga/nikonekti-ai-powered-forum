@@ -2,9 +2,11 @@
 # External Modules
 ##########################################
 
+from datetime import timedelta
 import os
 from flask import Flask
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 
 # services
@@ -15,6 +17,7 @@ from forum.services.connection import connection_view
 from forum.services.room import room_view
 from forum.services.socketio.events import socketio
 from forum.services.mailer import mailer_view
+from forum.services.auth_token import token
 
 MAIL_SERVER = os.getenv("MAIL_SERVER")
 MAIL_PORT = 587
@@ -37,6 +40,7 @@ def create_app():
 
     # adding mail to the app
     app.config["MAIL"] = mail
+    jwt = JWTManager(app)
 
     ##########################################
     # Configurations
@@ -54,6 +58,11 @@ def create_app():
     app.config["MAIL_DEFAULT_SENDER"] = MAIL_DEFAULT_SENDER
     app.config["MAIL_SUPPRESS_SEND"] = MAIL_SUPPRESS_SEND
   
+    # JWT Configurations
+    app.config["JWT_SECRET_KEY"] = "please-remember-to-change-me"
+    app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
+    app.config["JWT"] = jwt
+    
     ##########################################
     # CORS
     ##########################################
@@ -82,5 +91,6 @@ def create_app():
     app.register_blueprint(connection_view.bp, url_prefix="/api")
     app.register_blueprint(room_view.bp, url_prefix="/api")
     app.register_blueprint(mailer_view.bp, url_prefix="/mailer")
+    app.register_blueprint(token.bp, url_prefix="/api")
 
     return app

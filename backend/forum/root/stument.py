@@ -156,6 +156,20 @@ class StudentMentorForum:
                     "name": updates["name"],
                     "email": updates["email"],
                     "expertise": updates["expertise"],
+                    "verification_status": updates["verification_status"],
+                }
+            },
+        )
+        return result.modified_count
+    
+    def update_mentor_by_id_with_password(self, mentor_id, updates):
+        self.collection = self.db[MONGODB_MENTORS_COLLECTION_NAME]
+        result = self.collection.update_one(
+            {"_id": ObjectId(mentor_id)},
+            {
+                "$set": {
+                    "verification_status": updates["verification_status"],
+                    "password": updates["password"],
                 }
             },
         )
@@ -173,17 +187,21 @@ class StudentMentorForum:
         return result.deleted_count
 
     # Search mentors by expertise
-    def search_mentors(self, expertise=None):
-        query = {"type": "mentor"}
-        if expertise:
-            query["expertise"] = expertise
-        return list(self.collection.find(query))
+    def search_mentors(self, occupation: str = '', start: int = 0, limit: int = 10):
+        query = {}
+        if occupation:
+            query['occupation'] = occupation
+        
+        # Fetch mentors with pagination
+        mentors = self.db.mentors.find(query).skip(start).limit(limit)
+        return list(mentors)
 
     # Creating connection between student and mentor
-    def connect_student_to_mentor(self, student_email, mentor_email):
+    def connect_student_to_mentor(self, student_email, mentor_email, note=None):
         connection = {
             "student_email": student_email,
             "mentor_email": mentor_email,
+            "connection_note": note,
             "connected_at": datetime.datetime.now(),
         }
         result = self.connections_collection.insert_one(connection)

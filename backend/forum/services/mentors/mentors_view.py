@@ -95,10 +95,14 @@ def update_mentor():
 
     return jsonify({'error': 'Method not allowed'}), 405
 
-@bp.route('/search_mentors', methods=['GET'])
+
+@bp.route('/search_mentors', methods=['POST'])
 def search_mentors():
-    expertise = request.args.get('expertise')
-    
-    mentors = forum.search_mentors(expertise=expertise)
-    serialized_mentors = mentors_schema.dump(mentors)
-    return jsonify({'mentors': serialized_mentors}), 200
+    if request.method == 'POST':
+        occupation = request.args.get('occupation', '')
+        start = int(request.args.get('start', 0))
+        limit = int(request.args.get('limit', 10))
+        
+        mentors = forum.search_mentors(occupation=occupation, start=start, limit=limit)
+        serialized_mentors = mentors_schema.dump(mentors)
+        return jsonify({"status": "success",'mentors': serialized_mentors}), 200
