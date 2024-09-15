@@ -76,7 +76,7 @@ export default function Mentors() {
     if (target.isIntersecting && !loading && hasMore) {
       fetchMentors(mentors.length, 10)
     }
-  }, [fetchMentors, hasMore, mentors.length])
+  }, [fetchMentors, loading, hasMore, mentors.length])
 
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
@@ -234,7 +234,7 @@ function MentorsInfo({ mentor }: { mentor: Mentor }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] bg-white dark:bg-gray-800">
         <DialogHeader>
-          <DialogTitle className="text-blue-700 dark:text-blue-300">Mentor's Info</DialogTitle>
+          <DialogTitle className="text-blue-700 dark:text-blue-300">Mentor&apos;s Info</DialogTitle>
           <DialogDescription className='flex items-center gap-3 py-2'>
             <Avatar>
               <AvatarImage src={mentor.image_path} alt={mentor.name} />

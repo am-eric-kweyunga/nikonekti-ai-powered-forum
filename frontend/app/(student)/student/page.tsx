@@ -212,7 +212,7 @@ export default async function CareerGuidanceDashboard() {
                     <div className="text-sm text-gray-500">11:15 AM</div>
                   </div>
                   <div className="mt-1 text-gray-700">
-                    Start with learning a backend language like Node.js and practice building APIs. It's a great first step!
+                    Start with learning a backend language like Node.js and practice building APIs. It&apos;s a great first step!
                   </div>
                 </div>
               </div>
