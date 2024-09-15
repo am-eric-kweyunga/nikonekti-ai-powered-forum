@@ -60,6 +60,10 @@ export default function CareerGuidanceChat() {
 
   const params = useSearchParams();
   const mentor_param_mail = params.get("mentor");
+  const mentor_param_profile = params.get("profile");
+
+  console.log(params);
+  
 
   const filteredMentors = mentors.filter((mentor) =>
     mentor.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -274,7 +278,13 @@ export default function CareerGuidanceChat() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent side="bottom" align="end" className="w-40 mt-1">
-                        <DropdownMenuItem>View Profile</DropdownMenuItem>
+                        <DropdownMenuItem onClick={
+                          () => {
+                            const newParams = new URLSearchParams(params);
+                            newParams.set("mentor", selectedMentor.email);
+                            window.history.pushState({}, '', `${window.location.pathname}?${newParams}?profile`);
+                          }
+                        }>View Profile</DropdownMenuItem>
                         <DropdownMenuItem>Schedule Meeting</DropdownMenuItem>
                         <DropdownMenuItem>Mute Notifications</DropdownMenuItem>
                         <DropdownMenuItem className="text-red-600">Report Issue</DropdownMenuItem>

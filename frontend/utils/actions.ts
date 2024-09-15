@@ -55,7 +55,7 @@ export async function setCookie({ name, value, expires }: { name: string, value:
 export async function registerStudent() {
     const session = await getSession()
 
-    const response = await fetch(`${process.env.BACKEND_API_URL}/api/add_student`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}/api/add_student`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

@@ -28,7 +28,6 @@ const SessionProvider = async ({ children }: SessionProviderProps) => {
 
         const data = await res.json();
         
-        
         if (data.status === "success" || data.authorization === 'Authorized') {
             return (
                 <div className="flex h-screen w-full flex-col bg-white">
