@@ -154,7 +154,7 @@ export default async function CareerGuidanceDashboard() {
                 {mentors.map((mentor: any, index: number) => (
                   <Link
                     key={index}
-                    href="#"
+                    href={`/student/messages?mentor=${mentor.email}`}	
                     className="flex items-center justify-between rounded-md bg-gray-100 px-4 py-3 hover:bg-gray-200 transition-colors"
                   >
                     <div className="flex items-center gap-3">

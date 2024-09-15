@@ -79,7 +79,7 @@ const SidebarComponent = () => {
             <div className="mt-auto">
               {user && (
                 <motion.div
-                  className="flex items-center gap-2 rounded-md px-3 py-2 bg-gray-100"
+                  className="flex items-center gap-2 rounded-md px-3 py-2 bg-gray-100 cursor-pointer overflow-hidden"
                   whileHover={{ scale: 1.05 }}
                   onClick={() => router.push('/student/profile')}
                 >
@@ -87,7 +87,10 @@ const SidebarComponent = () => {
                     <AvatarImage src={user.picture || '/placeholder.svg?height=32&width=32'} />
                     <AvatarFallback>{user?.name?.slice(0, 1)}</AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium text-gray-700">{user.name}</span>
+                  <div className="flex flex-col items-start">
+                    <span className="text-xs font-medium text-gray-700">{user.name}</span>
+                    <span className="text-xs font-medium text-gray-500">Student</span>
+                  </div>
                 </motion.div>
               )}
             </div>

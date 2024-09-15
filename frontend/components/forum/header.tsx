@@ -63,7 +63,7 @@ const MobileSidebar = () => {
   const menuItems = [
     { href: '/student', icon: Home, label: 'Home' },
     { href: '/student/mentors', icon: Users, label: 'Mentors' },
-    { href: '/student/mentors', icon: MessageSquare, label: 'Messages' },
+    { href: '/student/messages', icon: MessageSquare, label: 'Messages' },
     { href: '#', icon: BookOpen, label: 'Forums' },
     { href: '#', icon: BookText, label: 'Resources' },
     { href: '#', icon: Calendar, label: 'Events' },
@@ -115,9 +115,13 @@ const MobileSidebar = () => {
               {menuItems.map((item, index) => (
                 <Link
                   key={item.href}
-                  href={item.href}
+                  href={`${item.href}`}
                   className="flex text-gray-700 justify-between w-full items-center gap-2 rounded-md px-3 py-2 text-lg font-medium hover:bg-gray-100 transition-colors"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    setTimeout(() => {
+                      setOpen(false)
+                    }, 400)
+                  }}
                 >
                   <span>{item.label}</span>
                   <motion.div

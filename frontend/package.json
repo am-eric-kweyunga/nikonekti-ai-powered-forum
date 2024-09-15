@@ -23,6 +23,7 @@
     "@uploadthing/react": "^6.8.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "cookie": "^0.6.0",
     "framer-motion": "^11.5.4",
     "lucide-react": "^0.439.0",
     "next": "14.2.7",
@@ -33,6 +34,7 @@
     "socket.io-client": "^4.7.5",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "universal-cookie": "^7.2.0",
     "uploadthing": "^6.13.3"
   },
   "devDependencies": {

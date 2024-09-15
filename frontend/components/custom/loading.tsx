@@ -31,7 +31,7 @@ export default function Loading({ isLoading }: { isLoading: boolean }) {
   }
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center">
+    <div className="min-h-full h-full bg-white flex items-center justify-center">
       <motion.div
         variants={containerVariants}
         initial="loading"

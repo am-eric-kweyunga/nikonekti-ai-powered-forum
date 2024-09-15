@@ -1,5 +1,6 @@
 "use server"
 import { getSession } from "@auth0/nextjs-auth0"
+import { cookies } from "next/headers"
 
 export async function getStudentsConnections() {
     const session = await getSession()
@@ -31,6 +32,40 @@ export async function getStudentsConnections() {
 export async function getUser() {
     const session = await getSession()
     return session?.user
+}
+
+export async function setCookie({ name, value, expires }: { name: string, value: string, expires: Date }) {
+    const session = await getSession()
+
+    if (session?.user?.email) {
+        cookies().set({
+            name: name,
+            value: value,
+            expires: expires,
+            httpOnly: true,
+            secure: true,
+            sameSite: 'strict',
+            path: '/',
+        })
+    }
+
+}
+
+export async function registerStudent() {
+    const session = await getSession()
+
+    const response = await fetch(`${process.env.BACKEND_API_URL}/api/add_student`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: session?.user?.email,
+            name: session?.user?.name,
+            picture: session?.user?.picture,
+        })
+    })
+    return response
 }
 
 export async function getMyMentors() {

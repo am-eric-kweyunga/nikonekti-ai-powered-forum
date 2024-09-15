@@ -39,7 +39,7 @@ export default function Mentors() {
   const [user, setUser] = useState<User>()
   const [connections, setConnections] = useState<any[]>([])
   const loader = useRef<HTMLDivElement | null>(null)
-  
+
   const router = useRouter()
 
   const fetchMentors = useCallback(async (start: number, limit: number) => {
@@ -76,12 +76,12 @@ export default function Mentors() {
     if (target.isIntersecting && !loading && hasMore) {
       fetchMentors(mentors.length, 10)
     }
-  }, [fetchMentors, loading, hasMore, mentors.length])
+  }, [fetchMentors, loading, hasMore])
 
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
       root: null,
-      rootMargin: '200px',
+      rootMargin: '10px',
       threshold: 1.0
     })
 
@@ -118,7 +118,9 @@ export default function Mentors() {
   useEffect(() => {
     setMentors([])
     setLoading(true)
-    fetchMentors(0, 10)
+    setTimeout(() => {
+      fetchMentors(0, 10)
+    }, 500)
   }, [fetchMentors])
 
   const filteredMentors = mentors.filter(mentor =>
@@ -131,16 +133,16 @@ export default function Mentors() {
   }
 
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      className="min-h-screen bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 w-full"
+      className="min-h-full bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 w-full"
     >
       <header className="bg-white dark:bg-gray-800 border-b p-4 sticky top-0 z-10 w-full flex justify-center shadow-md">
         <div className="container mx-auto flex flex-col md:flex-row justify-between items-center w-full">
-          <motion.h1 
+          <motion.h1
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -169,7 +171,7 @@ export default function Mentors() {
 
       <main className="container mx-auto py-8 px-4">
         <AnimatePresence>
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -190,7 +192,7 @@ export default function Mentors() {
 
 function MentorCard({ mentor, user, connections }: { mentor: Mentor, user?: User, connections: any[] }) {
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
@@ -199,7 +201,7 @@ function MentorCard({ mentor, user, connections }: { mentor: Mentor, user?: User
       <div className="p-6">
         <div className="flex items-center space-x-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={mentor.image_path} alt={mentor.name} />
+            <AvatarImage src={mentor.image_path} alt={mentor.name} className='object-cover object-center' />
             <AvatarFallback>{mentor.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
@@ -323,13 +325,12 @@ function ConnectWithMentor({ mentor, user, connections }: { mentor: Mentor, user
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger 
+      <DialogTrigger
         disabled={isConnected}
-        className={`text-nowrap min-w-32 flex items-center justify-center rounded-md p-2 text-sm font-semibold border transition-all ease-linear duration-200 ${
-          isConnected 
-            ? "border-green-600 bg-white hover:bg-white/30 text-green-600" 
+        className={`text-nowrap min-w-32 flex items-center justify-center rounded-md p-2 text-sm font-semibold border transition-all ease-linear duration-200 ${isConnected
+            ? "border-green-600 bg-white hover:bg-white/30 text-green-600"
             : "border-blue-700 bg-blue-700 hover:bg-blue-600 text-white"
-        }`}
+          }`}
       >
         {isConnected ? (
           <>
@@ -367,19 +368,18 @@ function ConnectWithMentor({ mentor, user, connections }: { mentor: Mentor, user
         <DialogFooter>
           <Button
             type="submit"
-            className={`w-full transition-all duration-300 ${
-              isLoading ? 'bg-blue-500 cursor-not-allowed' :
-              isSuccess ? 'bg-green-600 hover:bg-green-700' :
-              isError ? 'bg-red-600 hover:bg-red-700' :
-              'bg-blue-700 hover:bg-blue-800'
-            } text-white`}
+            className={`w-full transition-all duration-300 ${isLoading ? 'bg-blue-500 cursor-not-allowed' :
+                isSuccess ? 'bg-green-600 hover:bg-green-700' :
+                  isError ? 'bg-red-600 hover:bg-red-700' :
+                    'bg-blue-700 hover:bg-blue-800'
+              } text-white`}
             onClick={connectWithMentor}
             disabled={isLoading}
           >
             {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Connecting...</> :
-             isSuccess ? <><Check className="mr-2 h-4 w-4" /> Requested</> :
-             isError ? <><X className="mr-2 h-4 w-4" /> Try again</> :
-             <><Plus className="mr-2 h-4 w-4" /> Connect</>}
+              isSuccess ? <><Check className="mr-2 h-4 w-4" /> Requested</> :
+                isError ? <><X className="mr-2 h-4 w-4" /> Try again</> :
+                  <><Plus className="mr-2 h-4 w-4" /> Connect</>}
           </Button>
         </DialogFooter>
       </DialogContent>

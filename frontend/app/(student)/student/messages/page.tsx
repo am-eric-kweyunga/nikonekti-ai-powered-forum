@@ -8,21 +8,23 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "@/components/ui/input";
 import { AutosizeTextarea } from "@/components/custom/resizable-textarea";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, PhoneIcon, PlusIcon, SendHorizontalIcon, Search, MoreVertical, Paperclip, Smile } from "lucide-react";
+import { ArrowLeft, PhoneIcon, PlusIcon, SendHorizontalIcon, Search, MoreVertical, Paperclip, Smile, Loader2Icon } from "lucide-react";
+import { useParams, useSearchParams } from 'next/navigation'
+import { getMyMentors } from "@/utils/actions";
+import { Badge } from "@/components/ui/badge";
+import ChatIcon from "@/components/icons/chat-icon";
+import ChatStarter from "@/components/custom/chat-starter";
+import { time } from "console";
 
 interface Mentor {
   id: number;
   name: string;
+  email: string;
   lastSeen: string;
-  avatar: string;
-  role: string;
+  image_path: string;
+  occupation: string,
+  type: string;
 }
-
-const mentors: Mentor[] = [
-  { id: 1, name: "John Doe", lastSeen: "Yesterday at 9:32 PM", avatar: "https://github.com/shadcn.png", role: "Software Engineer" },
-  { id: 2, name: "Jane Smith", lastSeen: "Today at 1:45 PM", avatar: "https://github.com/shadcn.png", role: "UX Designer" },
-  { id: 3, name: "Michael Johnson", lastSeen: "Today at 11:20 AM", avatar: "https://github.com/shadcn.png", role: "Product Manager" },
-];
 
 interface Message {
   id: number;
@@ -38,9 +40,9 @@ const initialMessages: Message[] = [
     sender: "student",
     timestamp: "10:30 AM"
   },
-  { 
-    id: 2, 
-    text: "Sure, let me take a look. Can you please share the code or describe the issue in more detail?", 
+  {
+    id: 2,
+    text: "Sure, let me take a look. Can you please share the code or describe the issue in more detail?",
     sender: "mentor",
     timestamp: "10:32 AM"
   },
@@ -52,9 +54,45 @@ export default function CareerGuidanceChat() {
   const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const params = useSearchParams();
+  const mentor_param_mail = params.get("mentor");
+
   const filteredMentors = mentors.filter((mentor) =>
     mentor.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleGetMentors = async () => {
+    try {
+      const response = await getMyMentors()
+      setMentors(response);
+    } catch (error) {
+      console.error("Error fetching mentors:", error);
+    }
+  };
+
+  useEffect(() => {
+    try {
+      setLoading(true)
+      handleGetMentors()
+    } catch (error) {
+      setError("Unable to load mentors. Please try again later.");
+    } finally {
+      setLoading(false)
+    }
+  }, [mentors, loading, mentor_param_mail]);
+
+  useEffect(() => {
+    if (mentor_param_mail) {
+      const mentor = mentors.find((mentor) => mentor.email === mentor_param_mail);
+      if (mentor) {
+        setSelectedMentor(mentor);
+      }
+    }
+  }, [mentors, mentor_param_mail]);
 
   const handleSend = () => {
     if (message.trim() === "") return;
@@ -80,7 +118,8 @@ export default function CareerGuidanceChat() {
   };
 
   return (
-    <div className="w-full h-full flex p-2 overflow-hidden justify-between items-center md:rounded-xl bg-white">
+    <div className="w-full h-full flex md:p-2 overflow-hidden justify-between items-center md:rounded-xl bg-white">
+
       {/* Mentor List */}
       <AnimatePresence>
         {(!selectedMentor || (selectedMentor && window.innerWidth >= 768)) && (
@@ -90,14 +129,14 @@ export default function CareerGuidanceChat() {
             exit={{ x: -300, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             id="list_of_mentors"
-            className="h-full relative overflow-hidden bg-white flex flex-col gap-3 border rounded-sm md:rounded-l-xl w-full md:w-[425px] shadow"
+            className="h-full relative overflow-hidden bg-white flex flex-col gap-3 border rounded-sm  w-full md:w-[425px]"
           >
             <div className="p-3 bg-white z-10 w-full border-b sticky top-0 flex justify-between items-center gap-2">
               <div className="relative w-full">
                 <Input
                   type="text"
                   placeholder="Search for mentors..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#1D58B0] focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border-none !outline-none !shadow-none rounded-lg "
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                 />
@@ -106,33 +145,80 @@ export default function CareerGuidanceChat() {
             </div>
 
             <div className="flex flex-col gap-3 overflow-y-auto px-4 !py-5">
-              {filteredMentors.map((mentor) => (
-                <motion.div
-                  key={mentor.id}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="flex justify-between items-center cursor-pointer p-2 hover:bg-gray-100 transition rounded-lg"
-                  onClick={() => setSelectedMentor(mentor)}
-                >
-                  <div className="flex items-center gap-3">
-                    <Avatar>
-                      <AvatarImage src={mentor.avatar} />
-                      <AvatarFallback>{mentor.name[0]}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <span className="font-medium text-gray-900">{mentor.name}</span>
-                      <p className="text-xs text-gray-500">{mentor.role}</p>
-                      <p className="text-[10px] text-gray-400">Last seen: {mentor.lastSeen}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span className="text-xs text-[#1D58B0] font-semibold">Chat</span>
-                    <svg className="w-4 h-4 text-[#1D58B0]" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                      <path d="M21 7L9 19l-5.5-5.5 1.414-1.414L9 16.172 19.586 5.586z" />
-                    </svg>
-                  </div>
-                </motion.div>
-              ))}
+              {
+                mentors.length > 0 ? (
+                  <>
+                    {filteredMentors.map((mentor) => (
+                      <motion.div
+                        key={mentor.id}
+                        whileTap={{ scale: 0.98 }}
+                        className={`${mentor.email === mentor_param_mail ? "bg-gray-100" : ""} flex justify-between items-center cursor-pointer p-2 hover:bg-gray-100 transition rounded-lg`}
+                        onClick={() => {
+                          setSelectedMentor(null)
+                          // delay(1000)
+                          setTimeout(() => {
+                            setSelectedMentor(mentor);
+                            const newParams = new URLSearchParams(params);
+                            newParams.set("mentor", mentor.email);
+                            // Update the URL with the new params
+                            window.history.pushState({}, '', `${window.location.pathname}?${newParams}`);
+                          }, 200)
+                        }}
+                        exit={{ opacity: 0 }}
+                      >
+                        <motion.div
+                          className="flex w-full items-center gap-3 justify-between"
+                          initial={{ x: -20, opacity: 0 }}
+                          animate={{ x: 0, opacity: 1 }}
+                          whileHover={{ scale: 1.02 }}
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="relative p-2">
+                              <Avatar className="h-10 w-10 relative  ring-1 ring-blue-600 ring-offset-2">
+                                <AvatarImage src={mentor.image_path} className=" object-cover object-center" />
+                                <AvatarFallback>{mentor.name[0]}</AvatarFallback>
+                              </Avatar>
+                              {/* online status */}
+                              <Badge className="bg-green-600 p-1 top-0 right-0 absolute text-white/70 ml-4" variant={'secondary'}></Badge>
+                            </div>
+                            <div>
+                              <span className="font-medium text-gray-900">{mentor.name}</span>
+                              <p className="text-xs text-gray-500">{mentor.type} <Badge variant={'outline'} className="font-normal !shadow-none border text-xs">{mentor.occupation}</Badge></p>
+                              <p className="text-[10px] text-gray-400">Last seen: {mentor.lastSeen}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <span className="text-xs text-[#1D58B0] font-semibold">Chat</span>
+                            <svg className="w-4 h-4 text-[#1D58B0]" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                              <path d="M21 7L9 19l-5.5-5.5 1.414-1.414L9 16.172 19.586 5.586z" />
+                            </svg>
+                          </div>
+                        </motion.div>
+                      </motion.div>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    {
+                      !loading ? (
+                        <div className="flex items-center justify-center h-full">
+                          <Loader2Icon className="w-6 h-6 text-gray-500 animate-spin" />
+                        </div>
+                      ) : (
+                        error ? (
+                          <div className="flex items-center justify-center h-full">
+                            <p className="text-red-500">Error: {error}</p>
+                          </div>
+                        ) : (
+                          <div className="flex items-center justify-center h-full">
+                            <p className="text-gray-500">No mentors found</p>
+                          </div>
+                        )
+                      )
+                    }
+                  </>
+                )
+              }
             </div>
           </motion.div>
         )}
@@ -140,20 +226,26 @@ export default function CareerGuidanceChat() {
 
       {/* Chat Playground */}
       <AnimatePresence>
-        {selectedMentor && (
+        {selectedMentor ? (
           <motion.div
             initial={{ x: 10, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: 10, opacity: 0 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="w-full md:w-[calc(100%-425px)] flex flex-col gap-3 md:px-1 h-full md:bg-gray-50"
             id="chat_play_ground"
-            className="w-full md:px-1 h-full md:bg-gray-50"
           >
             <Card className="h-full md:border flex flex-col !rounded-sm md:shadow overflow-hidden w-full">
               <CardHeader className="flex flex-col w-full justify-between items-center bg-[#1D58B0] text-white p-0">
                 <CardTitle className="flex items-center gap-2 w-full justify-between p-3">
                   <div className="flex items-center gap-1 justify-center cursor-pointer">
-                    <div className="flex md:hidden justify-center items-center rounded-full hover:bg-[#1D58B0]/80 p-1" onClick={() => setSelectedMentor(null)}>
+                    <div
+                      className="flex md:hidden justify-center items-center rounded-full hover:bg-[#1D58B0]/80 p-1"
+                      onClick={() => {
+                        setSelectedMentor(null)
+                        window.history.pushState({}, '', `${window.location.pathname}`)
+                      }
+                      }>
                       <Button
                         className="rounded-full bg-transparent border-none hover:bg-transparent"
                         variant="ghost"
@@ -162,13 +254,13 @@ export default function CareerGuidanceChat() {
                         <ArrowLeft className="h-4 w-4 text-white" />
                       </Button>
                     </div>
-                    <Avatar>
-                      <AvatarImage src={selectedMentor.avatar} />
+                    <Avatar className="ring-1 ring-white ring-offset-2 ">
+                      <AvatarImage src={selectedMentor.image_path} className="object-cover object-center" />
                       <AvatarFallback>{selectedMentor.name[0]}</AvatarFallback>
                     </Avatar>
-                    <div>
-                      <p className="text-base font-semibold">{selectedMentor.name}</p>
-                      <p className="text-xs opacity-80">{selectedMentor.role}</p>
+                    <div className="ml-2">
+                      <p className="text-base font-semibold">{selectedMentor.name} </p>
+                      <p className="text-xs opacity-80">{selectedMentor.type} and {selectedMentor.occupation}</p>
                     </div>
                   </div>
                   <div className="flex items-center justify-center gap-1 h-full">
@@ -190,9 +282,9 @@ export default function CareerGuidanceChat() {
                     </DropdownMenu>
                   </div>
                 </CardTitle>
-                <CardDescription className="flex items-center text-xs bg-[#1D58B0]/80 w-full px-2 py-2 justify-center text-white/80">
+                {/* <CardDescription className="flex items-center text-xs bg-[#1D58B0]/80 w-full px-2 py-2 justify-center text-white/80">
                   <p>Last seen: {selectedMentor.lastSeen}</p>
-                </CardDescription>
+                </CardDescription> */}
               </CardHeader>
 
               <CardContent className="h-full py-5 w-full overflow-y-auto bg-gray-50">
@@ -206,8 +298,8 @@ export default function CareerGuidanceChat() {
                       className={`flex items-start gap-2 ${msg.sender === "mentor" ? "justify-start" : "justify-end"}`}
                     >
                       {msg.sender === "mentor" && (
-                        <Avatar className="w-8 h-8 border">
-                          <AvatarImage src={selectedMentor?.avatar} />
+                        <Avatar className="w-8 h-8 border ring-1 ring-blue-600">
+                          <AvatarImage src={selectedMentor?.image_path} className="object-cover" />
                           <AvatarFallback>{selectedMentor?.name[0]}</AvatarFallback>
                         </Avatar>
                       )}
@@ -228,31 +320,20 @@ export default function CareerGuidanceChat() {
 
               <CardFooter className="w-full h-auto bg-white bottom-0 p-3 border-t">
                 <div className="w-full flex gap-2 justify-between items-center">
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    <Paperclip className="h-5 w-5 text-gray-500" />
-                  </Button>
                   <AutosizeTextarea
                     maxHeight={150}
-                    minHeight={10}
-                    className={`border px-4 py-2 w-full transition-all ease-linear duration-300 rounded-full focus:ring-2 focus:ring-[#1D58B0] focus:border-transparent ${
-                      message !== "" ? "rounded-2xl" : ""
-                    }`}
+                    onSendMessage={handleSend}
+                    className={``}
                     placeholder="Type your message..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                   />
-                  <Button
-                    variant="default"
-                    size="icon"
-                    className="rounded-full bg-[#1D58B0] hover:bg-[#1D58B0]/90"
-                    onClick={handleSend}
-                  >
-                    <SendHorizontalIcon className="text-white" />
-                  </Button>
                 </div>
               </CardFooter>
             </Card>
           </motion.div>
+        ) : (
+          <ChatStarter />
         )}
       </AnimatePresence>
     </div>
