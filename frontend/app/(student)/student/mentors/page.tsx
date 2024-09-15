@@ -81,7 +81,7 @@ export default function Mentors() {
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
       root: null,
-      rootMargin: '10px',
+      rootMargin: '200px',
       threshold: 1.0
     })
 

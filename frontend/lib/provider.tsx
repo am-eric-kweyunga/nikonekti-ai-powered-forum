@@ -30,6 +30,7 @@ const SessionProvider = async ({ children }: SessionProviderProps) => {
                 <Error500 />
             );
         }
+        
         const data = await res.json();
 
         if (data.status === "success" || data.authorization === 'Authorized') {

@@ -151,28 +151,40 @@ export default async function CareerGuidanceDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {mentors.map((mentor: any, index: number) => (
-                  <Link
-                    key={index}
-                    href={`/student/messages?mentor=${mentor.email}`}	
-                    className="flex items-center justify-between rounded-md bg-gray-100 px-4 py-3 hover:bg-gray-200 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={mentor.image_path} alt={mentor.name} />
-                        <AvatarFallback className="bg-[#1D58B0] text-white">
-                          {mentor.name ? mentor.name.slice(0, 2) : 'M'}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <div className="font-medium">{mentor.name}</div>
-                        <div className="text-sm text-gray-500">{mentor.email}</div>
+                {mentors > 0 ? (
+                  <>
+                    {mentors.map((mentor: any, index: number) => (
+                      <Link
+                        key={index}
+                        href={`/student/messages?mentor=${mentor.email}`}
+                        className="flex items-center justify-between rounded-md bg-gray-100 px-4 py-3 hover:bg-gray-200 transition-colors"
+                      >
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10">
+                            <AvatarImage src={mentor.image_path} alt={mentor.name} />
+                            <AvatarFallback className="bg-[#1D58B0] text-white">
+                              {mentor.name ? mentor.name.slice(0, 2) : 'M'}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{mentor.name}</div>
+                            <div className="text-sm text-gray-500">{mentor.email}</div>
+                          </div>
+                        </div>
+                        <ChevronRight className="h-5 w-5 text-gray-500" />
+                      </Link>
+                    ))}
+                  </>
+                ) :
+                  (
+                    <>
+                      <div className="flex items-center text-center w-full justify-center rounded-mdpx-4 py-3 ">
+                          You have no mentors yet. <br /> Click the button above to find a mentor.
                       </div>
+                      </>
+                      )
+                }
                     </div>
-                    <ChevronRight className="h-5 w-5 text-gray-500" />
-                  </Link>
-                ))}
-              </div>
             </CardContent>
           </Card>
         </div>
