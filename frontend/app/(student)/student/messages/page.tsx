@@ -8,13 +8,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "@/components/ui/input";
 import { AutosizeTextarea } from "@/components/custom/resizable-textarea";
 import { motion, AnimatePresence, m } from "framer-motion";
-import { ArrowLeft, PhoneIcon, PlusIcon, SendHorizontalIcon, Search, MoreVertical, Paperclip, Smile, Loader2Icon } from "lucide-react";
-import { useParams, useSearchParams } from 'next/navigation'
+import { ArrowLeft, PhoneIcon, Search, MoreVertical, Loader2Icon } from "lucide-react";
+import { useSearchParams } from 'next/navigation'
 import { getMyMentors } from "@/utils/actions";
 import { Badge } from "@/components/ui/badge";
-import ChatIcon from "@/components/icons/chat-icon";
 import ChatStarter from "@/components/custom/chat-starter";
-import { time } from "console";
+import MentorProfile from "@/components/forum/student/view-mentor";
+import ScheduleMeeting from "@/components/forum/student/schedule-meeting";
+import ReportIssue from "@/components/forum/student/report-an-issue";
 
 interface Mentor {
   id: number;
@@ -22,6 +23,11 @@ interface Mentor {
   email: string;
   lastSeen: string;
   image_path: string;
+  location: string;
+  experience: string;
+  interests: string;
+  goals: string;
+  availability: string;
   occupation: string,
   type: string;
 }
@@ -61,9 +67,8 @@ export default function CareerGuidanceChat() {
   const params = useSearchParams();
   const mentor_param_mail = params.get("mentor");
   const mentor_param_profile = params.get("profile");
-
-  console.log(params);
-  
+  const mentor_param_schedule = params.get("schedule");
+  const report_an_issue = params.get("report");
 
   const filteredMentors = mentors.filter((mentor) =>
     mentor.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -164,7 +169,8 @@ export default function CareerGuidanceChat() {
                             setSelectedMentor(mentor);
                             const newParams = new URLSearchParams(params);
                             newParams.set("mentor", mentor.email);
-                            // Update the URL with the new params
+                            newParams.delete("profile", "view");
+                            newParams.delete("schedule", "meeting");
                             window.history.pushState({}, '', `${window.location.pathname}?${newParams}`);
                           }, 200)
                         }}
@@ -230,7 +236,7 @@ export default function CareerGuidanceChat() {
 
       {/* Chat Playground */}
       <AnimatePresence>
-        {selectedMentor ? (
+        {selectedMentor && !mentor_param_profile && !mentor_param_schedule && !report_an_issue ? (
           <motion.div
             initial={{ x: 10, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
@@ -281,13 +287,29 @@ export default function CareerGuidanceChat() {
                         <DropdownMenuItem onClick={
                           () => {
                             const newParams = new URLSearchParams(params);
-                            newParams.set("mentor", selectedMentor.email);
-                            window.history.pushState({}, '', `${window.location.pathname}?${newParams}?profile`);
+                            newParams.set("profile", "view");
+                            window.history.pushState({}, '', `${window.location.pathname}?${newParams}`);
                           }
                         }>View Profile</DropdownMenuItem>
-                        <DropdownMenuItem>Schedule Meeting</DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={
+                            () => {
+                              const newParams = new URLSearchParams(params);
+                              window.history.pushState({}, '', `${window.location.pathname}?${newParams}&schedule=meeting`);
+                            }
+                          }>Schedule Meeting</DropdownMenuItem>
                         <DropdownMenuItem>Mute Notifications</DropdownMenuItem>
-                        <DropdownMenuItem className="text-red-600">Report Issue</DropdownMenuItem>
+                        <DropdownMenuItem
+                          className="text-red-600"
+                          onClick={
+                            () => {
+                              const newParams = new URLSearchParams(params);
+                              newParams.set("report", "issue");
+                              newParams.delete("profile");
+                              window.history.pushState({}, '', `${window.location.pathname}?${newParams}`);
+                            }
+                          }
+                        >Report Issue</DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -343,7 +365,33 @@ export default function CareerGuidanceChat() {
             </Card>
           </motion.div>
         ) : (
-          <ChatStarter />
+          <>
+            {
+              mentor_param_profile === "view" && selectedMentor ? (
+                <><><MentorProfile mentor={selectedMentor} /></></>
+              ) : (
+                <><>
+                  {
+                    mentor_param_schedule === "meeting" && selectedMentor ? (
+                      <><>
+                        <ScheduleMeeting mentor={selectedMentor} />
+                      </></>
+                    ) : (
+                      <><>
+                        {
+                          report_an_issue === "issue" && selectedMentor ? (
+                            <><><ReportIssue mentor={selectedMentor} /></></>
+                          ) : (
+                            <><><ChatStarter /></></>
+                          )
+                        }
+                      </></>
+                    )
+                  }
+                </></>
+              )
+            }
+          </>
         )}
       </AnimatePresence>
     </div>

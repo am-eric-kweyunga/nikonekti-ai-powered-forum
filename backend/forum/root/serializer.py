@@ -31,6 +31,10 @@ class MentorSchema(ma.Schema):
     occupation = fields.Str()
     ratings = fields.Int()
     image_path = fields.Str()
+    availability = fields.Str()
+    goals = fields.Str()
+    interests = fields.Str()
+    experience = fields.Str()
     location = fields.Str()
     created_at = fields.DateTime()
 
