@@ -1,0 +1,24 @@
+services:
+  web:
+    build: .
+    container_name: flask_app
+    env_file:
+      - ./.env
+    # volumes:
+    #   - ./api:/app/api
+
+    ports:
+      - "5000:5000"
+    restart: always
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    deploy:
+      resources:
+        limits:
+          memory: "256m"
+          cpus: "0.50"
