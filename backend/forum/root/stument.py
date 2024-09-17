@@ -105,13 +105,13 @@ class StudentMentorForum:
     # Message Board
     ############################################################################################################
 
-    def post_message(self, room_id, sender_email, message):
+    def post_message(self, room_id, message, type):
         # connecting to the collection
         self.collection = self.db[MONGODB_MESSAGES_COLLECTION_NAME]
         msg = {
             "room_id": room_id,
-            "sender_email": sender_email,
-            "message": message,
+            "sender_type": type,
+            "message": [message],
             "timestamp": datetime.datetime.now(),
         }
         result = self.collection.insert_one(msg)
@@ -136,6 +136,10 @@ class StudentMentorForum:
     def find_mentor_by_email(self, email):
         self.collection = self.db[MONGODB_MENTORS_COLLECTION_NAME]
         return self.collection.find_one({"email": email})
+    
+    def find_mentor_by_email_password(self, email, password):
+        self.collection = self.db[MONGODB_MENTORS_COLLECTION_NAME]
+        return self.collection.find_one({"email": email, "password": password})
 
     # Update a student by ID or a mentor by ID
     def update_student_by_id(self, student_id, updates: dict):

@@ -9,3 +9,7 @@ MarkupSafe==2.1.5
 python-dotenv==1.0.1
 Werkzeug==3.0.4
 flask_mail
+flask_jwt_extended
+pymongo
+flask_marshmallow
+flask_socketio

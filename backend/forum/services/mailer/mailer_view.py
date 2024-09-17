@@ -1,5 +1,6 @@
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask import Blueprint, request, jsonify, url_for
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
@@ -93,9 +94,10 @@ def verify_email():
         # Set mentor with update_mentor_by_id_with_password
         mentor_id = mentor.get("_id")
         mentor_password = generate_random_password()
+        hashed_password = generate_password_hash(mentor_password)
         
         updates = {
-            "password": mentor_password,
+            "password": hashed_password,
             "verification_status": True
         }
         updated_mentor = forum.update_mentor_by_id_with_password(mentor_id, updates)

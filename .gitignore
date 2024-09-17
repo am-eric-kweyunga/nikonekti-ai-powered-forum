@@ -4,6 +4,7 @@ instance/*
 !instance/.gitignore
 .webassets-cache
 .env
+app/(mentor)/mentor/(session)/*
 
 ### Flask.Python Stack ###
 # Byte-compiled / optimized / DLL files

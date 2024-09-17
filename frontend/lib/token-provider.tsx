@@ -2,9 +2,8 @@
 import React, { createContext, useContext, ReactNode } from "react";
 import useToken from "@/hooks/use-token";
 
-
 interface TokenContextType {
-    token: string | null;
+    token: string | null | undefined;
     setToken: (userToken: string) => void;
     removeToken: () => void;
     isLoading: boolean;
@@ -16,7 +15,7 @@ const TokenContext = createContext<TokenContextType | undefined>(undefined);
 // TokenProvider component
 export const TokenProvider = ({ children }: { children: ReactNode }) => {
     const { token, setToken, removeToken, isLoading } = useToken();
-
+    
     return (
         <TokenContext.Provider value={{ token, setToken, removeToken, isLoading }}>
             {children}

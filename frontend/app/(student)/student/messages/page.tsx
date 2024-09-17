@@ -10,12 +10,18 @@ import { AutosizeTextarea } from "@/components/custom/resizable-textarea";
 import { motion, AnimatePresence, m } from "framer-motion";
 import { ArrowLeft, PhoneIcon, Search, MoreVertical, Loader2Icon } from "lucide-react";
 import { useSearchParams } from 'next/navigation'
-import { getMyMentors } from "@/utils/actions";
+import { getMyMentors, getUser } from "@/utils/actions";
 import { Badge } from "@/components/ui/badge";
 import ChatStarter from "@/components/custom/chat-starter";
 import MentorProfile from "@/components/forum/student/view-mentor";
 import ScheduleMeeting from "@/components/forum/student/schedule-meeting";
 import ReportIssue from "@/components/forum/student/report-an-issue";
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
+import { io } from "socket.io-client";
+import { UserProfile } from "@auth0/nextjs-auth0/client";
+import { set } from "date-fns";
+import { toast } from "@/hooks/use-toast";
 
 interface Mentor {
   id: number;
@@ -33,36 +39,67 @@ interface Mentor {
 }
 
 interface Message {
-  id: number;
-  text: string;
-  sender: "student" | "mentor";
-  timestamp: string;
+  room: string;
+  message: {
+    id: number;
+    text: string;
+    sender: "student" | "mentor";
+    timestamp: string;
+  }
 }
 
-const initialMessages: Message[] = [
-  {
-    id: 1,
-    text: "Hi John, I'm struggling with the React project we discussed earlier. Could you please help me understand the issue I'm facing?",
-    sender: "student",
-    timestamp: "10:30 AM"
-  },
-  {
-    id: 2,
-    text: "Sure, let me take a look. Can you please share the code or describe the issue in more detail?",
-    sender: "mentor",
-    timestamp: "10:32 AM"
-  },
-];
 
 export default function CareerGuidanceChat() {
-  const [messageList, setMessageList] = useState<Message[]>(initialMessages);
-  const [message, setMessage] = useState("");
+
+  const [messageList, setMessageList] = useState<Message[]>([]); // inbox
+  const [message, setMessage] = useState(""); // single message from users
+  const [student, setStudent] = useState<UserProfile>();
+  
   const [selectedMentor, setSelectedMentor] = useState<Mentor | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-
+  
   const [mentors, setMentors] = useState<Mentor[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// SOCKET IO STATES
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  const [room, setRoom] = useState<string>("");
+  const [socket, setSocket] = useState<any>(undefined);
+  const [online, setOnline] = useState<boolean>(false);
+  const [notification, setNotification] = useState<string[]>([]);
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// SOCKET IO IMPLEMENTATION
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  useEffect(() => {
+    /// Connect to the socket.io server
+    const socket = io(`http://127.0.0.1:5050`);
+    
+    socket.on("receive_message", (response: any) => {
+      console.log(response);
+      setMessageList((list) => [...list, response]);
+      toast({
+        title: "New Message",
+        description: 'new message',
+        variant: "default",
+      })
+    });
+
+    // receiving notifications
+    socket.on("notification", (response: any) => {
+      console.log(response);
+      toast({
+        title: "New Message",
+        description: response.note,
+        variant: "default",
+      })
+    });
+
+    setSocket(socket);
+  }, []);
 
   const params = useSearchParams();
   const mentor_param_mail = params.get("mentor");
@@ -76,6 +113,8 @@ export default function CareerGuidanceChat() {
 
   const handleGetMentors = async () => {
     try {
+      const student_ = await getUser();
+      setStudent(student_);
       const response = await getMyMentors()
       setMentors(response);
     } catch (error) {
@@ -104,29 +143,24 @@ export default function CareerGuidanceChat() {
   }, [mentors, mentor_param_mail]);
 
   const handleSend = () => {
-    if (message.trim() === "") return;
+    if (message.trim() === "" || !selectedMentor || !student) return;
+
+    // creating a new message
     const newMessage: Message = {
-      id: messageList.length + 1,
-      text: message,
-      sender: "student",
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      room: selectedMentor.email+"-"+student.email,
+      message: {
+        id: messageList.length + 1,
+        text: message,
+        sender: "student",
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
     };
-    setMessageList([...messageList, newMessage]);
+
+    // Emit the message to the server
+    socket.emit("send_message", newMessage);
     setMessage("");
 
-    // Simulate mentor response after a short delay
-    setTimeout(() => {
-      const mentorResponse: Message = {
-        id: messageList.length + 2,
-        text: "I understand. Let's break down the problem step by step. Can you show me the specific part of the code where you're having trouble?",
-        sender: "mentor",
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
-      setMessageList(prevMessages => [...prevMessages, mentorResponse]);
-    }, 2000);
-  };
-
-  return (
+  };  return (
     <div className="w-full h-full flex md:p-2 overflow-hidden justify-between items-center md:rounded-xl bg-white">
 
       {/* Mentor List */}
@@ -153,18 +187,23 @@ export default function CareerGuidanceChat() {
               </div>
             </div>
 
-            <div className="flex flex-col gap-3 overflow-y-auto px-4 !py-5">
+            <div className="flex flex-col gap-3 overflow-y-auto px-4 !py-5 w-full">
               {
                 mentors.length > 0 ? (
                   <>
-                    {filteredMentors.map((mentor) => (
+                    { student && filteredMentors.map((mentor) => (
                       <motion.div
                         key={mentor.id}
                         whileTap={{ scale: 0.98 }}
                         className={`${mentor.email === mentor_param_mail ? "bg-gray-100" : ""} flex justify-between items-center cursor-pointer p-2 hover:bg-gray-100 transition rounded-lg`}
                         onClick={() => {
                           setSelectedMentor(null)
-                          // delay(1000)
+                          // delay(1000) befor navigating to the mentor's profile
+
+                          socket.emit("join_room", {
+                            room: mentor.email+"-"+student.email,
+                          });
+
                           setTimeout(() => {
                             setSelectedMentor(mentor);
                             const newParams = new URLSearchParams(params);
@@ -173,6 +212,7 @@ export default function CareerGuidanceChat() {
                             newParams.delete("schedule", "meeting");
                             window.history.pushState({}, '', `${window.location.pathname}?${newParams}`);
                           }, 200)
+
                         }}
                         exit={{ opacity: 0 }}
                       >
@@ -323,21 +363,21 @@ export default function CareerGuidanceChat() {
                 <div className="flex flex-col gap-4">
                   {messageList.map((msg) => (
                     <motion.div
-                      key={msg.id}
+                      key={msg.message.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3 }}
-                      className={`flex items-start gap-2 ${msg.sender === "mentor" ? "justify-start" : "justify-end"}`}
+                      className={`flex items-start gap-2 ${msg.message.sender === "mentor" ? "justify-start" : "justify-end"}`}
                     >
-                      {msg.sender === "mentor" && (
+                      {msg.message.sender === "mentor" && (
                         <Avatar className="w-8 h-8 border ring-1 ring-blue-600">
                           <AvatarImage src={selectedMentor?.image_path} className="object-cover" />
                           <AvatarFallback>{selectedMentor?.name[0]}</AvatarFallback>
                         </Avatar>
                       )}
-                      <div className={`rounded-lg p-3 max-w-[75%] ${msg.sender === "mentor" ? "bg-white" : "bg-[#1D58B0] text-white"}`}>
-                        <p className="text-sm">{msg.text}</p>
-                        <p className="text-[10px] mt-1 opacity-70">{msg.timestamp}</p>
+                      <div className={`rounded-lg p-3 max-w-[75%] ${msg.message.sender === "mentor" ? "bg-white" : "bg-[#1D58B0] text-white"}`}>
+                        <p className="text-sm">{msg.message.text}</p>
+                        <p className="text-[10px] mt-1 opacity-70">{msg.message.timestamp}</p>
                       </div>
                       {/* {msg.sender === "student" && (
                         <Avatar className="w-8 h-8 border">

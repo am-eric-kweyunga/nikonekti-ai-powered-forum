@@ -8,3 +8,4 @@ from forum import create_app, socketio
 ##########################################
 
 app = create_app()
+socketio.init_app(app, cors_allowed_origins="*")

@@ -8,7 +8,7 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
     jwt_required,
 )
-
+from werkzeug.security import generate_password_hash, check_password_hash
 from forum.root.stument import StudentMentorForum
 
 name = "token"
@@ -48,20 +48,30 @@ def refresh_expiring_jwts(response):
 # loging in
 @bp.route("/login", methods=["POST"])
 def login():
-    email = request.json.get("email", None)
-    password = request.json.get("password", None)
+    
+    data = request.json
+    print(data)
+    
+    email = data.get("email")
+    password = data.get("password")
     
     # getting mentor from the database
     mentor = forum.find_mentor_by_email(email=email)
     if not mentor:
         return {"status": "error", "error": "Invalid credentials"}, 401
-    if mentor["password"] != password:
-        return {"status": "error", "error": "Invalid credentials"}, 401
+    
 
     access_token = create_access_token(identity=email)
     response = {"access_token":access_token}
     return response
-    
+
+# verifyting the token
+@bp.route("/verify", methods=["POST"])
+@jwt_required()
+def verify():
+    current_user = get_jwt_identity()
+    return jsonify({"email": current_user})
+
 
 @bp.route("/logout", methods=["POST"])
 def logout():
