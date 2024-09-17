@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: nikonekti-forum-backend 
+  IMAGE_NAME: "${{ github.repository }}-backend"
 
 jobs:
 
