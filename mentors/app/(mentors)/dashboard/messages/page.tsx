@@ -318,7 +318,7 @@ export default function MentorChatPage() {
                     placeholder="Message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    className="flex-grow rounded-lg py-5 border-none !outline-none !ring-0 !ring-offset-0 !ring-0 !shadow-none !focus:ring-0 !focus:ring-offset-0 !focus:shadow-none"
+                    className="flex-grow rounded-lg py-5 border-none !outline-none !ring-0 !ring-offset-0 !shadow-none !focus:ring-0 !focus:ring-offset-0 !focus:shadow-none"
                   />
                   <Button type="submit" size={'icon'} className='rounded-full'>
                     <Send className="h-5 w-5" />
