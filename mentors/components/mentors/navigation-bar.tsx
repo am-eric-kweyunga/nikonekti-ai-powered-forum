@@ -23,9 +23,9 @@ import { useRouter } from 'next/navigation'
 
 const menuItems = [
   { name: 'Dashboard', href: '/dashboard', icon: <Users className="w-4 h-4 mr-2" /> },
-  { name: 'My Mentees', href: '/dashboard/mentees', icon: <Users className="w-4 h-4 mr-2" /> },
+  // { name: 'My Mentees', href: '/dashboard/mentees', icon: <Users className="w-4 h-4 mr-2" /> },
   { name: 'Messages', href: '/dashboard/messages', icon: <MessageSquare className="w-4 h-4 mr-2" /> },
-  { name: 'Resources', href: '/dashboard/resources', icon: <BookOpen className="w-4 h-4 mr-2" /> },
+  // { name: 'Resources', href: '/dashboard/resources', icon: <BookOpen className="w-4 h-4 mr-2" /> },
 ]
 
 export default function Navbar() {
@@ -75,7 +75,7 @@ export default function Navbar() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
+                    <Avatar className="h-12 w-12 ring-2 ring-offset-2 ring-blue-700">
                       <AvatarImage src={`${user?.picture}`} alt="User" />
                       <AvatarFallback>{user?.name?.slice(0,2)}</AvatarFallback>
                     </Avatar>

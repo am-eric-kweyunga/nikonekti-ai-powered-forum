@@ -32,11 +32,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased h-svh w-full`}
       >
         <UserProvider>
-          <NavigationBar />
-          <div className="h-full w-full">
-            {children}
+          <div className="h-full w-full flex flex-col gap-2">
+            <NavigationBar />
+            <div className="">
+              {children}
+            </div>
+            <div>
+              <MentorFooter />
+            </div>
           </div>
-          <MentorFooter />
         </UserProvider>
       </body>
     </html>

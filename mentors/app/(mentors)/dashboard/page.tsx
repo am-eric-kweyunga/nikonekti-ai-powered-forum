@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { Bell, MessageSquare, UserPlus, Settings, Book, ChevronRight } from 'lucide-react'
+import { Bell, MessageSquare, Settings, Book, ChevronRight, Loader2 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -20,16 +20,21 @@ interface Connection {
 export default function MentorDashboard() {
     const [isVisible, setIsVisible] = useState(true)
     const [connections, setConnections] = useState<Connection[]>([])
+    const [connectionLoading, setConnectionLoading] = useState(true)
 
     useEffect(() => {
+        // get mentor connections
+        setConnectionLoading(true)
         async function GetMentorConnections() {
             const data = await getMentorConnections();
             console.log(data);
 
             if (data.status == "success") {
                 setConnections(data.connections)
+                setConnectionLoading(false)
             } else {
                 setConnections([])
+                setConnectionLoading(false)
             }
         }
         GetMentorConnections()
@@ -43,16 +48,21 @@ export default function MentorDashboard() {
         }
     }, [])
 
-    const notifications = [
-        { id: 1, message: "New connection request from Alice", time: "2 hours ago" },
-        { id: 2, message: "Bob sent you a message", time: "1 day ago" },
-        { id: 3, message: "Reminder: Mentoring session with Charlie tomorrow", time: "1 day ago" },
-    ]
+    const notifications: {
+        id: number;
+        image_path: string;
+        name: string;
+        message: string;
+        time: string
+    }[] = []
 
-    const messages = [
-        { id: 1, name: "Fiona Brown", message: "Thank you for your advice!", time: "3 hours ago", avatar: "/placeholder.svg?height=40&width=40" },
-        { id: 2, name: "George Smith", message: "Can we schedule a call?", time: "1 day ago", avatar: "/placeholder.svg?height=40&width=40" },
-    ]
+    const messages: {
+        id: number;
+        image_path: string;
+        name: string;
+        message: string;
+        time: string
+    }[] = []
 
     return (
         <div className="container mx-auto p-4 space-y-6">
@@ -84,7 +94,7 @@ export default function MentorDashboard() {
                             </TabsList>
                             <TabsContent value="notifications">
                                 <ScrollArea className="h-[300px]">
-                                    {notifications.map((notification) => (
+                                    {notifications.length > 0 ? notifications.map((notification) => (
                                         <div key={notification.id} className="flex items-start space-x-4 mb-4">
                                             <Bell className="h-5 w-5 text-blue-600 mt-1" />
                                             <div>
@@ -92,41 +102,58 @@ export default function MentorDashboard() {
                                                 <p className="text-xs text-gray-500">{notification.time}</p>
                                             </div>
                                         </div>
-                                    ))}
+                                    )) : (
+                                        <div className="flex items-center justify-center h-full">
+                                            <p className="text-gray-500">No notifications</p>
+                                        </div>
+                                    )}
                                 </ScrollArea>
                             </TabsContent>
                             <TabsContent value="connections">
-                                <ScrollArea className="h-[300px] flex flex-col gap-4 py-2">
-                                    {connections.length > 0 ? connections.map((request, index) => (
-                                        <Link
-                                            href={`/dashboard/messages?student=${request.email}`}
-                                            key={index}
-                                        >
-                                            <div className="flex items-center justify-between border p-2 rounded-md hover:bg-gray-100">
-                                                <div className="flex items-center space-x-4">
-                                                    <Avatar>
-                                                        <AvatarImage src={request?.image_path} alt={request?.name} />
-                                                        <AvatarFallback className='uppercase'>{request?.name.slice(0, 2)}</AvatarFallback>
-                                                    </Avatar>
-                                                    <div>
-                                                        <p className="font-medium">{request?.name}</p>
-                                                        <p className="text-sm text-gray-500">{request?.email}</p>
+                                <ScrollArea className="h-[300px] px-4">
+                                    <div className='flex flex-col gap-2'>
+                                        {connections.length > 0 ? connections.map((request, index) => (
+                                            <Link
+                                                href={`/dashboard/messages?student=${request.email}`}
+                                                className=''
+                                                key={index}
+                                            >
+                                                <div className="flex items-center justify-between border p-2 rounded-md hover:bg-green-100">
+                                                    <div className="flex items-center space-x-4">
+                                                        <Avatar>
+                                                            <AvatarImage src={request?.image_path} alt={request?.name} />
+                                                            <AvatarFallback className='uppercase'>{request?.name.slice(0, 2)}</AvatarFallback>
+                                                        </Avatar>
+                                                        <div>
+                                                            <p className="font-medium">{request?.name}</p>
+                                                            <p className="text-sm text-gray-500">{request?.email}</p>
+                                                        </div>
                                                     </div>
+                                                    <Button variant={'outline'} size="sm" className='hover:bg-inherit  border-green-500'>connected</Button>
                                                 </div>
-                                                <Button size="sm" className='bg-green-500'>connected</Button>
-                                            </div>
-                                        </Link>
-                                    )) : (
-                                        <p className='text-center py-5'>No connections yet</p>
-                                    )}
+                                            </Link>
+                                        )) : (
+                                            <>
+                                                {connectionLoading ? (
+                                                    <div className="flex items-center justify-center h-full">
+                                                        <Loader2 className="animate-spin h-5 w-5 text-blue-600" />
+                                                    </div>
+                                                ) : (
+                                                    <div className="flex items-center justify-center h-full">
+                                                        <p className="text-gray-500">No connections</p>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
                                 </ScrollArea>
                             </TabsContent>
                             <TabsContent value="messages">
                                 <ScrollArea className="h-[300px]">
-                                    {messages.map((message) => (
+                                    {messages.length > 0 ? messages.map((message) => (
                                         <div key={message.id} className="flex items-start space-x-4 mb-4">
                                             <Avatar>
-                                                <AvatarImage src={message.avatar} alt={message.name} />
+                                                <AvatarImage src={message.image_path} alt={message.name} />
                                                 <AvatarFallback>{message.name.slice(0, 2)}</AvatarFallback>
                                             </Avatar>
                                             <div>
@@ -135,7 +162,11 @@ export default function MentorDashboard() {
                                                 <p className="text-xs text-gray-500">{message.time}</p>
                                             </div>
                                         </div>
-                                    ))}
+                                    )) : (
+                                        <div className="flex items-center justify-center h-full">
+                                            <p className="text-gray-500">No messages</p>
+                                        </div>
+                                    )}
                                 </ScrollArea>
                             </TabsContent>
                         </Tabs>
@@ -153,10 +184,10 @@ export default function MentorDashboard() {
                                 Send Message
                             </Button>
                         </Link>
-                        <Button className="w-full justify-start" variant="outline">
+                        {/* <Button className="w-full justify-start" variant="outline">
                             <UserPlus className="mr-2 h-4 w-4" />
                             Connect with Student
-                        </Button>
+                        </Button> */}
                         <Link href="/dashboard/settings" className="block">
                             <Button className="w-full justify-start" variant="outline">
                                 <Settings className="mr-2 h-4 w-4" />

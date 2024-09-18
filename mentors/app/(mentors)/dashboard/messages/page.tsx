@@ -177,17 +177,27 @@ export default function MentorChatPage() {
     }
   }
 
+
+  useEffect(() => {
+    const studentEmail = searchParams.get('student')
+    if (studentEmail) {
+      const conversation = connections.find(conv => conv.email === studentEmail)
+      if (conversation) setActiveConversation(conversation)
+    }
+  }, [searchParams, connections])
+
+
   useEffect(() => {
 
     const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`)
 
-    socket.on('connect', () => {
-      console.log('Connected to socket')
+    socket.on('receive_message', (data: any) => {
+      setMessages((prevMessages) => [...prevMessages, data])
     })
 
-    socket.on('receive_message', (data: any) => {
+    socket.on('notification', (data: any) => {
       console.log(data);
-      setMessages((prevMessages) => [...prevMessages, data])
+
     })
 
     setSocket(socket)
@@ -196,8 +206,10 @@ export default function MentorChatPage() {
 
   return (
     <div className="container mx-auto p-4 h-[calc(100vh-4rem)] flex flex-col">
-      <h1 className="text-2xl font-bold text-blue-900 mb-4">Mentor Your Students</h1>
-      <div className="flex flex-grow overflow-hidden bg-white w-full gap-1 rounded-lg shadow-lg">
+      <div className='w-full flex justify-between items-center'>
+        <h1 className="text-2xl font-bold text-blue-900 mb-4">Mentor Your Students</h1>
+      </div>
+      <div className="flex flex-grow overflow-hidden bg-white w-full gap-1 rounded-lg ">
         <AnimatePresence initial={false}>
           {(!isMobileView || !activeConversation) && (
             <motion.div
@@ -205,7 +217,7 @@ export default function MentorChatPage() {
               animate={{ width: isMobileView ? "100%" : "33.333333%", opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="border rounded-l-lg overflow-hidden"
+              className="border rounded-lg overflow-hidden"
             >
               <div className="p-4 border-b">
                 <div className="relative">
@@ -213,38 +225,40 @@ export default function MentorChatPage() {
                   <Input
                     type="text"
                     placeholder="Search conversations"
-                    className="pl-10 w-full"
+                    className="pl-10 w-full border-none active:outline-none !outline-none ring-0 focus:ring-0 focus:ring-offset-0"
                   />
                 </div>
               </div>
               <ScrollArea className="h-[calc(100vh-16rem)]">
-                {connections.map((conv) => (
-                  <motion.div
-                    key={conv.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                    className={`flex items-center p-4 cursor-pointer hover:bg-blue-50 ${activeConversation?.id === conv.id ? 'bg-blue-100' : ''}`}
-                    onClick={() => handleConversationClick(conv)}
-                  >
-                    <Avatar className="h-12 w-12">
-                      <AvatarImage src={conv.image_path} alt={conv.name} />
-                      <AvatarFallback>{conv.name.slice(0, 2)}</AvatarFallback>
-                    </Avatar>
-                    <div className="ml-4 flex-grow">
-                      <div className="flex justify-between items-baseline">
-                        <h3 className="font-semibold">{conv.name}</h3>
-                        <span className="text-xs text-gray-500">{conv.time}</span>
+                <div>
+                  {connections.map((conv) => (
+                    <motion.div
+                      key={conv.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className={`flex items-center p-4 cursor-pointer hover:bg-blue-50 ${activeConversation?.email === conv.email ? 'bg-blue-50 transition-all duration-300' : ''}`}
+                      onClick={() => handleConversationClick(conv)}
+                    >
+                      <Avatar className="h-12 w-12 ring-2 border ring-offset-2 ring-blue-500">
+                        <AvatarImage src={conv.image_path} alt={conv.name} />
+                        <AvatarFallback className='uppercase'>{conv.name.slice(0, 2)}</AvatarFallback>
+                      </Avatar>
+                      <div className="ml-4 flex-grow">
+                        <div className="flex justify-between items-baseline">
+                          <h3 className="font-semibold">{conv.name}</h3>
+                          <span className="text-xs text-gray-500">{conv.time}</span>
+                        </div>
+                        <p className="text-sm text-gray-600 truncate">{conv.email}</p>
                       </div>
-                      <p className="text-sm text-gray-600 truncate">{conv.email}</p>
-                    </div>
-                    {conv.unread > 0 && (
-                      <span className="bg-blue-500 text-white text-xs rounded-full px-2 py-1 ml-2">
-                        {conv.unread}
-                      </span>
-                    )}
-                  </motion.div>
-                ))}
+                      {conv.unread > 0 && (
+                        <span className="bg-blue-500 text-white text-xs rounded-full px-2 py-1 ml-2">
+                          {conv.unread}
+                        </span>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
               </ScrollArea>
             </motion.div>
           )}
@@ -255,7 +269,7 @@ export default function MentorChatPage() {
               animate={{ width: isMobileView ? "100%" : "66.666667%", opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="flex flex-col border rounded-r-lg"
+              className="flex flex-col border rounded-lg"
             >
               <div className="p-4 border-b border-gray-200 flex justify-between items-center">
                 {isMobileView && (
@@ -264,11 +278,14 @@ export default function MentorChatPage() {
                   </Button>
                 )}
                 <div className="flex items-center">
-                  <Avatar className="h-10 w-10">
+                  <Avatar className="h-10 w-10 ring-2 ring-offset-2 ring-blue-500">
                     <AvatarImage src={activeConversation.avatar} alt={activeConversation.name} />
-                    <AvatarFallback>{activeConversation.name.slice(0, 2)}</AvatarFallback>
+                    <AvatarFallback className='uppercase'>{activeConversation.name.slice(0, 2)}</AvatarFallback>
                   </Avatar>
-                  <h2 className="ml-3 font-semibold">{activeConversation.name}</h2>
+                  <div className='flex flex-col'>
+                    <h2 className="ml-3 font-semibold">{activeConversation.name}</h2>
+                    <h2 className="ml-3 text-xs font-normal">{activeConversation.email}</h2>
+                  </div>
                 </div>
               </div>
               <ScrollArea className="flex-grow p-4">
@@ -294,16 +311,16 @@ export default function MentorChatPage() {
                   </motion.div>
                 ))}
               </ScrollArea>
-              <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200">
+              <form onSubmit={handleSendMessage} className="px-4 py-2 border-t border-gray-200">
                 <div className="flex space-x-2">
                   <Input
                     type="text"
-                    placeholder="Type a message..."
+                    placeholder="Message..."
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    className="flex-grow"
+                    className="flex-grow rounded-lg py-5 border-none !outline-none !ring-0 !ring-offset-0 !ring-0 !shadow-none !focus:ring-0 !focus:ring-offset-0 !focus:shadow-none"
                   />
-                  <Button type="submit">
+                  <Button type="submit" size={'icon'} className='rounded-full'>
                     <Send className="h-5 w-5" />
                     <span className="sr-only">Send message</span>
                   </Button>
@@ -316,7 +333,7 @@ export default function MentorChatPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="flex-grow hidden  md:flex flex-col items-center justify-center p-4"
+              className="flex-grow hidden border rounded-lg md:flex flex-col items-center justify-center p-4"
             >
               <NikonektiLogo />
               <motion.h2
