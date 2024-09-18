@@ -82,6 +82,7 @@ def verify_email():
         
         # Deserialize token (validate token and extract email)
         email = serializer.loads(token, salt=os.getenv("SECURITY_PASSWORD_SALT"), max_age=3600)
+        print(email)
         
         # Find the mentor in the database
         mentor = forum.find_mentor_by_email(email=email)
@@ -125,11 +126,12 @@ def verify_email():
         html_utf8 = welcome_html.encode('utf-8')
         html_content = MIMEText(html_utf8, 'html', 'utf-8')
         msg.attach(html_content)
+        print(msg.as_string())
         
         try: 
             # Send the email
             smtp_server.sendmail(str(os.getenv("MAIL_DEFAULT_SENDER")), email, msg.as_string())
-            
+            print("sent")
             # Return success response
             return jsonify({"status": "success", "message": "Your one time password was sent to your email, check your email!"}), 200
         
@@ -140,7 +142,4 @@ def verify_email():
         
     
     except SignatureExpired:
-        return jsonify({"status": "expired"})
-    except Exception as e:
-        print(e)
-        return jsonify({"status": "error", "message": str(e)}), 400
+        return jsonify({"status": "expired"}), 400

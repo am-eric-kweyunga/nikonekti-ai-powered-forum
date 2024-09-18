@@ -3,13 +3,14 @@ from flask import Blueprint, jsonify, request
 
 # relative imports
 from forum.root.stument import StudentMentorForum
-from forum.root.serializer import MentorSchema, ConnectionSchema
+from forum.root.serializer import MentorSchema, ConnectionSchema, StudentSchema
 
 # Initialize the forum and schema objects
 forum = StudentMentorForum()
 mentor_schema = MentorSchema()
 mentors_schema = MentorSchema(many=True)
 connection_schema = ConnectionSchema()
+student_schema = StudentSchema()
 
 # Initialize the blueprint
 name = "connection"
@@ -47,25 +48,31 @@ def connect():
 @bp.route('/mentor_connections', methods=['POST'])
 def mentor_connections():
     data = request.json
-
+    print(data)
     mentor_email = data.get('mentor_email')
 
     # validating mentor email
     exst_mentor = forum.find_mentor_by_email(email=mentor_email)
     
     if not exst_mentor:
-        return jsonify({"status":"error",'message': 'Mentor not found'}), 404
+        return jsonify({"status":"error", 'message': 'Mentor not found'})
     
     connections = forum.find_connection_by_mentor_email(mentor_email)
     if not connections:
-        return jsonify({"status":"error",'message': 'No connections found'}), 404
+        return jsonify({"status":"error",'message': 'No connections found'})
     
     all_connections = []
     for connection in connections:
         serialized_connection = connection_schema.dump(connection)
         all_connections.append(serialized_connection)
     
-    return jsonify({'connections': all_connections}), 200
+    all_students = []
+    for connection in all_connections:
+        student = forum.find_student_by_email(email=connection['student_email'])
+        serialized_student = student_schema.dump(student)
+        all_students.append(serialized_student)
+
+    return jsonify({"status": "success", 'connections': all_students}), 200
 
 @bp.route('/student_connections', methods=['POST'])
 def student_connections():

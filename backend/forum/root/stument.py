@@ -190,6 +190,11 @@ class StudentMentorForum:
         result = self.collection.delete_one({"_id": ObjectId(user_id)})
         return result.deleted_count
 
+    # getting all mentors
+    def get_all_mentors(self):
+        self.collection = self.db[MONGODB_MENTORS_COLLECTION_NAME]
+        return list(self.collection.find())
+    
     # Search mentors by expertise
     def search_mentors(self, occupation: str = '', start: int = 0, limit: int = 10):
         query = {}

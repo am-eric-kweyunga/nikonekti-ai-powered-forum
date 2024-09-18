@@ -42,9 +42,9 @@ def add_mentor():
             name, email, location, occupation, experience, interests, goals, availability, additional_info, ratings, image
         )
         
-        return jsonify({"status": "success", "mentor_id": str(mentor_id)}), 201
+        return jsonify({"status": "success", "mentor_id": str(mentor_id)})
 
-    return jsonify({'error': 'Method not allowed'}), 405
+    return jsonify({'error': 'Method not allowed'})
 
 
 @bp.route('/find_mentor', methods=['POST'])
@@ -55,14 +55,14 @@ def find_mentor():
         mentor_email = data.get('email')
 
         if not mentor_email:
-            return jsonify({'error': 'Missing email'}), 400
+            return jsonify({'error': 'Missing email'})
 
         mentor = forum.find_mentor_by_email(email=mentor_email)
         if mentor:
             serialized_mentor = mentor_schema.dump(mentor)
-            return jsonify({'authorization': 'registered', 'mentor': serialized_mentor}), 200
+            return jsonify({'authorization': 'registered', 'mentor': serialized_mentor})
 
-        return jsonify({'authorization': 'Unregistered mentor'}), 401
+        return jsonify({'authorization': 'Unregistered mentor'})
 
     return jsonify({'error': 'Method not allowed'}), 405
 
@@ -104,5 +104,13 @@ def search_mentors():
         limit = int(request.args.get('limit', 10))
         
         mentors = forum.search_mentors(occupation=occupation, start=start, limit=limit)
+        serialized_mentors = mentors_schema.dump(mentors)
+        return jsonify({"status": "success",'mentors': serialized_mentors}), 200
+    
+# getting all mentors
+@bp.route('/get_all_mentors', methods=['GET'])
+def get_all_mentors():
+    if request.method == 'GET':
+        mentors = forum.get_all_mentors()
         serialized_mentors = mentors_schema.dump(mentors)
         return jsonify({"status": "success",'mentors': serialized_mentors}), 200
