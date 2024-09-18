@@ -62,7 +62,8 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
           description: response.message,
           variant: 'destructive',
         })
-        setTimeout(() => router.push('/mentor'), 3000)
+
+        setTimeout(() => router.push('/mentor'), 2000)
 
       } else {
         setVerificationStatus('error')
