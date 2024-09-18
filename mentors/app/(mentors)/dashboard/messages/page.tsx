@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Search, Send, ArrowLeft } from 'lucide-react'
+import { Search, Send, ArrowLeft, Loader2 } from 'lucide-react'
 import { getMentorConnections } from '@/actions/auth_actions'
 import { io } from 'socket.io-client'
 import { useUser } from '@auth0/nextjs-auth0/client'
@@ -107,7 +107,7 @@ const NikonektiLogo = () => (
   </motion.svg>
 )
 
-export default function MentorChatPage() {
+function MessagesComponent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [activeConversation, setActiveConversation] = useState<Conversation | null>(null)
@@ -358,4 +358,12 @@ export default function MentorChatPage() {
       </div>
     </div>
   )
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense fallback={<div><Loader2 className='text-blue-700 animate-spin' /></div>}>
+      <MessagesComponent />
+    </Suspense>
+  );
 }
