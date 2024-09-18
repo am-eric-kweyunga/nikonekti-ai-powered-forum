@@ -20,9 +20,9 @@ const SidebarComponent = () => {
     { href: '/student', icon: Home, label: 'Home' },
     { href: '/student/mentors', icon: Users, label: 'Mentors' },
     { href: '/student/messages', icon: MessageSquare, label: 'Messages' },
-    { href: '#', icon: BookOpen, label: 'Forums' },
-    { href: '#', icon: BookText, label: 'Resources' },
-    { href: '#', icon: Calendar, label: 'Events' },
+    // { href: '#', icon: BookOpen, label: 'Forums' },
+    // { href: '#', icon: BookText, label: 'Resources' },
+    // { href: '#', icon: Calendar, label: 'Events' },
   ]
 
   const sidebarVariants = {
