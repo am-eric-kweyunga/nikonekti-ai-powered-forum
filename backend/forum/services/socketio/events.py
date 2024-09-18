@@ -69,14 +69,12 @@ def handle_join_room(data):
     if existing_room:
         emit('notification', {'note': f'Joined room {room}'}, room=room)
         print(f" Joined room {room}")
-        
-        # finding the messages in the room
-        message = forum.get_messages_by_room(room_id=existing_room['_id'])
-        
-        return
     
     # creating a new room if no room existing
     new_room = forum.create_room(room_name=room, participants=participants)
+    if new_room:
+        emit('notification', {'note': f'Created room {room}'}, room=room)
+        print(f" Created room {room}")
     
     emit('response', {'message': f'Joined room {room}'}, room=room)
 

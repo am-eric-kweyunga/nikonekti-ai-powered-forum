@@ -130,7 +130,6 @@ export default function MentorChatPage() {
   useEffect(() => {
     async function GetMentorConnections() {
       const data = await getMentorConnections();
-      console.log(data);
 
       if (data.status == "success") {
         setConnections(data.connections)
@@ -170,7 +169,7 @@ export default function MentorChatPage() {
           id: messages.length + 1,
           sender: 'mentor',
           text: newMessage,
-          timestamp: new Date().toLocaleTimeString()
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       }
       socket.emit("send_message", (newMsg), (data: any) => {
@@ -182,7 +181,7 @@ export default function MentorChatPage() {
 
   useEffect(() => {
 
-    const socket = io('http://127.0.0.1:5050')
+    const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`)
     socket.on('connect', () => {
       console.log('Connected to socket')
     })

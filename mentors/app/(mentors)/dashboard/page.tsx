@@ -96,14 +96,17 @@ export default function MentorDashboard() {
                                 </ScrollArea>
                             </TabsContent>
                             <TabsContent value="connections">
-                                <ScrollArea className="h-[300px]">
+                                <ScrollArea className="h-[300px] flex flex-col gap-4 py-2">
                                     {connections.length > 0 ? connections.map((request, index) => (
-                                        <Link href={`/dashboard/messages?student=${request.email}`} key={index}>
-                                            <div key={index} className="flex items-center justify-between mb-4">
+                                        <Link
+                                            href={`/dashboard/messages?student=${request.email}`}
+                                            key={index}
+                                        >
+                                            <div className="flex items-center justify-between border p-2 rounded-md hover:bg-gray-100">
                                                 <div className="flex items-center space-x-4">
                                                     <Avatar>
                                                         <AvatarImage src={request?.image_path} alt={request?.name} />
-                                                        <AvatarFallback>{request?.name.slice(0, 2)}</AvatarFallback>
+                                                        <AvatarFallback className='uppercase'>{request?.name.slice(0, 2)}</AvatarFallback>
                                                     </Avatar>
                                                     <div>
                                                         <p className="font-medium">{request?.name}</p>
