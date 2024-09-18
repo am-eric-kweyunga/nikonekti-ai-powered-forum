@@ -24,18 +24,19 @@ def handle_message(data):
     
     # finding the existing room by participants
     participants = room.split('-')
+    
     existing_room = forum.find_room_by_participants(
         participants=participants
     )
+    
     print(existing_room)
+    
     print(f'participants: {participants}')
+    
     if existing_room:
         print('room found')
         # updating the message to the database
         try:
-            
-            
-        
             # sending the message to the existing room
             emit('receive_message', {"room": room, 'message': message}, room=room)
             print('message sent')

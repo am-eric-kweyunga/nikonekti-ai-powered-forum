@@ -172,9 +172,7 @@ export default function MentorChatPage() {
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       }
-      socket.emit("send_message", (newMsg), (data: any) => {
-        console.log("Message sent successfully");
-      })
+      socket.emit("send_message", (newMsg))
       setNewMessage('')
     }
   }
@@ -182,6 +180,7 @@ export default function MentorChatPage() {
   useEffect(() => {
 
     const socket = io(`${process.env.NEXT_PUBLIC_API_URL}`)
+
     socket.on('connect', () => {
       console.log('Connected to socket')
     })
@@ -193,7 +192,7 @@ export default function MentorChatPage() {
 
     setSocket(socket)
 
-  }, [activeConversation])
+  }, [])
 
   return (
     <div className="container mx-auto p-4 h-[calc(100vh-4rem)] flex flex-col">

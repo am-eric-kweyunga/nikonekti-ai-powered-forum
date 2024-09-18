@@ -48,7 +48,7 @@ def connect():
 @bp.route('/mentor_connections', methods=['POST'])
 def mentor_connections():
     data = request.json
-    print(data)
+    
     mentor_email = data.get('mentor_email')
 
     # validating mentor email

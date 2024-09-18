@@ -76,7 +76,7 @@ export default function CareerGuidanceChat() {
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     /// Connect to the socket.io server
-    const socket = io(`http://127.0.0.1:5050`);
+    const socket = io(`${process.env.NEXT_PUBLIC_BACKEND_API_URL}`);
     
     socket.on("receive_message", (response: any) => {
       console.log(response);
