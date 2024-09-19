@@ -65,20 +65,19 @@ def handle_join_room(data):
     mentor = forum.find_mentor_by_email(email=participants[0])
     if not mentor:
         return
-    mentor_name = mentor.name
     # finding the existing room
     existing_room = forum.find_room_by_participants(
         participants=participants
     )
     
     if existing_room:
-        emit('notification', {'note': f'Your mentor {mentor_name} is online'}, room=room)
+        emit('notification', {'note': f'online'}, room=room)
         print(f" Joined room {room}")
     
     # creating a new room if no room existing
     new_room = forum.create_room(room_name=room, participants=participants)
     if new_room:
-        emit('notification', {'note': f'Mentor {mentor_name} is online'}, room=room)
+        emit('notification', {'note': f'online'}, room=room)
     
     emit('response', {'message': f'Online'}, room=room)
 
