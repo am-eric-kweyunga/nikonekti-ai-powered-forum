@@ -44,23 +44,23 @@ export default async function CareerGuidanceDashboard() {
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Skills Development</span>
-                    <span className="text-sm font-medium text-[#1D58B0]">75%</span>
+                    <span className="text-sm font-medium text-[#1D58B0]">15%</span>
                   </div>
-                  <Progress value={75} className="h-2" />
+                  <Progress value={15} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Networking with mentors</span>
-                    <span className="text-sm font-medium text-[#1D58B0]">60%</span>
+                    <span className="text-sm font-medium text-[#1D58B0]">10%</span>
                   </div>
-                  <Progress value={60} className="h-2" />
+                  <Progress value={10} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between mb-1">
                     <span className="text-sm font-medium">Personal Training</span>
-                    <span className="text-sm font-medium text-[#1D58B0]">80%</span>
+                    <span className="text-sm font-medium text-[#1D58B0]">30%</span>
                   </div>
-                  <Progress value={80} className="h-2" />
+                  <Progress value={30} className="h-2" />
                 </div>
               </div>
             </CardContent>
@@ -113,8 +113,8 @@ export default async function CareerGuidanceDashboard() {
                       <AvatarFallback className="bg-[#1D58B0] text-white">FD</AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">Frontend Developers</div>
-                      <div className="text-sm text-gray-500">10 members</div>
+                      <div className="font-medium">Nikonekti Career Community</div>
+                      <div className="text-sm text-gray-500">100 members</div>
                     </div>
                   </div>
                   <ChevronRight className="h-5 w-5 text-gray-500" />
@@ -128,8 +128,8 @@ export default async function CareerGuidanceDashboard() {
                       <AvatarFallback className="bg-[#1D58B0] text-white">PM</AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-medium">Product Managers</div>
-                      <div className="text-sm text-gray-500">15 members</div>
+                      <div className="font-medium">Medical Doctors Path finders</div>
+                      <div className="text-sm text-gray-500">195 members</div>
                     </div>
                   </div>
                   <ChevronRight className="h-5 w-5 text-gray-500" />
@@ -190,7 +190,7 @@ export default async function CareerGuidanceDashboard() {
         </div>
 
         {/* Career Community */}
-        <Card className="mt-6">
+        {/* <Card className="mt-6">
           <CardHeader className="flex items-center justify-between py-6">
             <CardTitle className="text-2xl">Global Career Community</CardTitle>
             <Button variant="outline">
@@ -234,7 +234,7 @@ export default async function CareerGuidanceDashboard() {
             <Input placeholder="Share your thoughts or ask a question..." className="flex-1" />
             <Button>Post</Button>
           </CardFooter>
-        </Card>
+        </Card> */}
       </div>
     </main>
   )
