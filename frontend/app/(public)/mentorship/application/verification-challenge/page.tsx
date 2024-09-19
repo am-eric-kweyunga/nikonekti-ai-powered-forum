@@ -45,7 +45,7 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
           description: 'Your email has been verified successfully!',
         })
 
-        setTimeout(() => router.push('/mentor'), 3000)
+        setTimeout(() => router.push('https://mentorsforumnikonektivercelapp.vercel.app/'), 3000)
       } else if (response.status === "expired") {
 
         setVerificationStatus('error')
@@ -56,14 +56,14 @@ export default function EmailVerificationPage({ searchParams }: { searchParams: 
         })
 
       } else if (response.status === "verified") {
-        setVerificationStatus('error')
+        setVerificationStatus('success')
         toast({
           title: 'Error',
           description: response.message,
           variant: 'destructive',
         })
 
-        setTimeout(() => router.push('/mentor'), 2000)
+        setTimeout(() => router.push('https://mentorsforumnikonektivercelapp.vercel.app/'), 2000)
 
       } else {
         setVerificationStatus('error')
